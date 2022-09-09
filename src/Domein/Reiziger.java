@@ -1,9 +1,8 @@
 package Domein;
 
 import java.sql.Date;
-import java.time.LocalDate;
 
-public class Reiziger{
+public class Reiziger {
     private int reiziger_id;
     private String voorletters;
     private String tussenvoegsels;
@@ -15,7 +14,22 @@ public class Reiziger{
     public Reiziger() {
     }
 
+    public Reiziger(int reiziger_id, String voorletters, String tussenvoegsels, String achternaam, Date geboortedatum) {
+        this.reiziger_id = reiziger_id;
+        this.voorletters = voorletters;
+        this.tussenvoegsels = tussenvoegsels;
+        this.achternaam = achternaam;
+        this.geboortedatum = geboortedatum;
+    }
 
+
+    public Adres getAdres() {
+        return adres;
+    }
+
+    public void setAdres(Adres adres) {
+        this.adres = adres;
+    }
 
     public int getReiziger_id() {
         return reiziger_id;
@@ -59,6 +73,7 @@ public class Reiziger{
 
     @Override
     public String toString() {
+
         return "Reiziger{" +
                 "reiziger_id=" + reiziger_id +
                 ", voorletters='" + voorletters + '\'' +

@@ -9,6 +9,18 @@ public class Adres {
     private int reiziger_id;
 
 
+
+    public Adres(){}
+
+    public Adres(int adres_id, String postcode, String huisnummer, String straat, String woonplaats, int reiziger_id) {
+        this.adres_id = adres_id;
+        this.postcode = postcode;
+        this.huisnummer = huisnummer;
+        this.straat = straat;
+        this.woonplaats = woonplaats;
+        this.reiziger_id = reiziger_id;
+    }
+
     public int getAdres_id() {
         return adres_id;
     }

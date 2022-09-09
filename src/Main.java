@@ -1,12 +1,11 @@
 import Domein.*;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.List;
 
 public class Main {
 
-    public Main() throws SQLException {
+    public Main(){
     }
 
     public static void main(String[] args) throws SQLException {
@@ -26,9 +25,6 @@ public class Main {
         return myConn;
     }
 
-//    private static Connection closeConnection(){
-//
-//    }
 
 
     private static void testReizigerDAO(ReizigerDAO rdao) throws SQLException {
@@ -59,27 +55,21 @@ public class Main {
         System.out.println();
 
 
-
         //test rdao.findById()
         System.out.println("test reizigers zoeken op id");
         //haal reizigers uit de database:
-        Reiziger reiziger2 = rdao.findById(1);
+        Reiziger reiziger2 = rdao.findReizigerById(1);
         System.out.println("[Test] ReizigerDAO.findById() geeft de volgende reizigers:");
         System.out.println(reiziger2);
         System.out.println();
         System.out.println();
 
 
-
         //test rdao.save()
         System.out.println("test reiziger toevoegen aan tabel/safe");
         //Maak een nieuwe reiziger aan en persisteer deze in de database
-        Reiziger r1 = new Reiziger();
-        r1.setAchternaam("test");
-        r1.setReiziger_id(20);
-        r1.setVoorletters("test");
-        r1.setGeboortedatum(Date.valueOf("1800-12-12"));
-        r1.setTussenvoegsels("test");
+        Reiziger r1 = new Reiziger(20, "test", "test", "test", Date.valueOf("1800-12-12"));
+
         System.out.print("[Test] Eerst " + reizigers.size() + " reizigers, na ReizigerDAO.save() ");
         rdao.save(r1);
         reizigers = rdao.findAll();
@@ -91,16 +81,10 @@ public class Main {
         System.out.println();
 
 
-
         //test rdao.delete()
         System.out.println("reiziger verwijderen test");
-        //Reiziger r2 = new Reiziger(14, "d","e","d", Date.valueOf("1900-11-22"));
-        Reiziger r2 = new Reiziger();
-        r2.setAchternaam("test2");
-        r2.setReiziger_id(25);
-        r2.setVoorletters("test2");
-        r2.setGeboortedatum(Date.valueOf("1800-12-12"));
-        r2.setTussenvoegsels("test2");
+        Reiziger r2 = new Reiziger(25, "test2", "test2", "test2", Date.valueOf("1800-12-12"));
+
 
         //voeg eerst de reiziger toe:
         rdao.save(r2);
@@ -111,30 +95,19 @@ public class Main {
         System.out.println();
 
 
-
-
-
         System.out.println("test de update functie reiziger");
         //maak reiziger aan
         rdao.save(r2);
         //print reizigerinformatie uit:
-        System.out.println(rdao.findById(25));
-
+        System.out.println(rdao.findReizigerById(25));
         //maak de geupdate reiziger aan
-        Reiziger r3 = new Reiziger();
-        r3.setAchternaam("test3");
-        r3.setReiziger_id(25);
-        r3.setVoorletters("test3");
-        r3.setGeboortedatum(Date.valueOf("1800-12-12"));
-        r3.setTussenvoegsels("test3");
-
+        Reiziger r3 = new Reiziger( 25, "test3", "test3", "test3", Date.valueOf("1800-12-12"));
         //update de reiziger
         rdao.update(r3);
         //print de geupdate versie uit
-        System.out.println(rdao.findById(25));
+        System.out.println(rdao.findReizigerById(25));
         //verwijder reiziger 3 zodat het de volgende keer weer goed gaat
         rdao.delete(r3);
-
 
     }
 
@@ -147,15 +120,10 @@ public class Main {
             System.out.println(a);
         }
         //test adao.save()
-        System.out.println("test reiziger toevoegen aan tabel/safe");
+        System.out.println("test adres toevoegen aan tabel/safe");
         //Maak een nieuwe reiziger aan en persisteer deze in de database
-        Adres a1 = new Adres();
-        a1.setAdres_id(13);
-        a1.setPostcode("1111ee");
-        a1.setHuisnummer("test");
-        a1.setStraat("test");
-        a1.setWoonplaats("test");
-        a1.setReiziger_id(13);
+
+        Adres a1 = new Adres(13, "ewf","ees", "ese", "ese", 13);
 
 
         System.out.println("eerst zijn er zoveel adressen: " + adao.findAll().size());
@@ -164,10 +132,9 @@ public class Main {
 
         //verwijder hier meteen weer deze reiziger zodat de database geen duplicate fout geeft elke keer
         adao.delete(a1);
+        //hier is dus meteen de delete functie getest
         System.out.println();
         System.out.println();
-
-
 
 
 
@@ -179,13 +146,7 @@ public class Main {
         System.out.println(lijstMetAdressen.get(7));
 
         //maak de geupdate reiziger aan
-        Adres a2 = new Adres();
-        a2.setStraat("test3");
-        a2.setAdres_id(13);
-        a2.setHuisnummer("test3");
-        a2.setPostcode("1234EE");
-        a2.setWoonplaats("test3");
-        a2.setReiziger_id(13);
+        Adres a2 = new Adres(13,"1234EE",  "test3","test3" , "test3", 13);
 
         //update de reiziger
         adao.update(a2);
@@ -194,6 +155,10 @@ public class Main {
         System.out.println(lijstMetAdressen.get(6));
         //verwijder reiziger 3 zodat het de volgende keer weer goed gaat
         adao.delete(a2);
+
+
+
+
 
 
 

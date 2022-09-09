@@ -2,17 +2,15 @@ package Domein;
 
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ReizigerDAOPsql implements ReizigerDAO {
 
     private Connection conn;
-    private ReizigerDAO rdao;
 
 
-    public ReizigerDAOPsql(Connection conn) throws SQLException {
+    public ReizigerDAOPsql(Connection conn) {
         this.conn = conn;
     }
 
@@ -34,14 +32,14 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             pt.executeUpdate();
 
             return true;
+
         } catch (Exception e) {
             return false;
         }
     }
 
     @Override
-    public boolean update(Reiziger reiziger){
-
+    public boolean update(Reiziger reiziger) {
 
         try {
             String query = "update reiziger set reiziger_id = ?, voorletters = ?, tussenvoegsel = ?, achternaam = ?, geboortedatum = ? where reiziger_id = ?";
@@ -58,6 +56,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             pt.executeUpdate();
 
             return true;
+
         } catch (Exception e) {
             return false;
         }
@@ -83,12 +82,11 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         } catch (Exception e) {
             return false;
         }
-        //todo boolean goed returnen
     }
 
 
     @Override
-    public Reiziger findById(int id) throws SQLException {
+    public Reiziger findReizigerById(int id) throws SQLException {
 
         String query = "select * from reiziger where reiziger_id = ?";
         PreparedStatement pt = conn.prepareStatement(query);
@@ -153,7 +151,5 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             reizigerLijst.add(r);
         }
         return reizigerLijst;
-
     }
-
 }

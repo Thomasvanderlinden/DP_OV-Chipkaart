@@ -7,7 +7,6 @@ import java.util.List;
 public class AdresDAOPsql implements AdresDAO {
 
     private Connection conn;
-    private AdresDAO adao;
 
 
     public AdresDAOPsql(Connection conn) {
@@ -16,7 +15,7 @@ public class AdresDAOPsql implements AdresDAO {
 
 
     @Override
-    public boolean save(Adres adres) throws SQLException {
+    public boolean save(Adres adres){
 
         try {
             String query = "insert into adres(adres_id, postcode, huisnummer, straat, woonplaats, reiziger_id) values (?, ?, ?, ?, ?, ?)";
@@ -31,9 +30,8 @@ public class AdresDAOPsql implements AdresDAO {
 
             pt.executeUpdate();
 
-            //todo moet hier nog iets bouwen om juiste boolean te returnen:
-            //todo exceptions moeten nog beter worden afgehandeld
             return true;
+
         } catch (Exception e) {
             return false;
         }
@@ -57,6 +55,7 @@ public class AdresDAOPsql implements AdresDAO {
             pt.executeUpdate();
 
             return true;
+
         } catch (Exception e) {
             return false;
         }
@@ -80,6 +79,7 @@ public class AdresDAOPsql implements AdresDAO {
             pt.executeUpdate();
 
             return true;
+
         } catch (Exception e) {
             return false;
         }
@@ -105,6 +105,31 @@ public class AdresDAOPsql implements AdresDAO {
         return adres;
     }
 
+
+    @Override
+    public Adres findAdresById(int id) throws SQLException {
+
+        String query = "select * from adres where adres_id = ?";
+        PreparedStatement pt = conn.prepareStatement(query);
+
+        pt.setInt(1, id);
+        ResultSet myRs = pt.executeQuery();
+
+
+        Adres adres = new Adres();
+        while (myRs.next()) {
+            adres.setAdres_id(Integer.parseInt(myRs.getString(1)));
+            adres.setPostcode(myRs.getString(2));
+            adres.setHuisnummer(myRs.getString(3));
+            adres.setStraat(myRs.getString(4));
+            adres.setWoonplaats(myRs.getString(5));
+            adres.setReiziger_id(myRs.getInt(6));
+        }
+        return adres;
+
+    }
+
+
     @Override
     public List<Adres> findAll() throws SQLException {
         Statement myStmt = conn.createStatement();
@@ -116,6 +141,8 @@ public class AdresDAOPsql implements AdresDAO {
         return resultaat;
     }
 
+
+    //deze klasse heb ik zelf toegevoegd zodat findAll & findByDatum er netter uitzien, anders staat het in de methodes zelf:
     public List<Adres> conveteerNaarAdresObject(ResultSet myRs) throws SQLException {
 
         List<Adres> adreslijst = new ArrayList<>();
