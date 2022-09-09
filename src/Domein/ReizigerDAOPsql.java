@@ -9,6 +9,8 @@ import java.util.List;
 public class ReizigerDAOPsql implements ReizigerDAO {
 
     private Connection conn;
+    private ReizigerDAO rdao;
+
 
     public ReizigerDAOPsql(Connection conn) throws SQLException {
         this.conn = conn;
@@ -16,62 +18,73 @@ public class ReizigerDAOPsql implements ReizigerDAO {
 
 
     @Override
-    public boolean save(Reiziger reiziger) throws SQLException {
+    public boolean save(Reiziger reiziger) {
 
 
-        String query = "insert into reiziger(reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum) values (?, ?, ?, ?, ?)";
-        PreparedStatement pt =  conn.prepareStatement(query);
+        try {
+            String query = "insert into reiziger(reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum) values (?, ?, ?, ?, ?)";
+            PreparedStatement pt = conn.prepareStatement(query);
 
-        pt.setInt(1, reiziger.getReiziger_id());
-        pt.setString(2, reiziger.getVoorletters());
-        pt.setString(3, reiziger.getTussenvoegsels());
-        pt.setString(4, reiziger.getAchternaam());
-        pt.setDate(5, reiziger.getGeboortedatum());
+            pt.setInt(1, reiziger.getReiziger_id());
+            pt.setString(2, reiziger.getVoorletters());
+            pt.setString(3, reiziger.getTussenvoegsels());
+            pt.setString(4, reiziger.getAchternaam());
+            pt.setDate(5, reiziger.getGeboortedatum());
 
+            pt.executeUpdate();
 
-        pt.executeUpdate();
-
-        //todo moet hier nog iets bouwen om juiste boolean te returnen:
-        //todo exceptions moeten nog beter worden afgehandeld
-        return true;
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
-    public boolean update(Reiziger reiziger) {
+    public boolean update(Reiziger reiziger){
 
 
-        //todo beetje raar dit er is geen oude en nieuwe:
+        try {
+            String query = "update reiziger set reiziger_id = ?, voorletters = ?, tussenvoegsel = ?, achternaam = ?, geboortedatum = ? where reiziger_id = ?";
+            PreparedStatement pt = conn.prepareStatement(query);
 
+            pt.setInt(1, reiziger.getReiziger_id());
+            pt.setString(2, reiziger.getVoorletters());
+            pt.setString(3, reiziger.getTussenvoegsels());
+            pt.setString(4, reiziger.getAchternaam());
+            pt.setDate(5, reiziger.getGeboortedatum());
 
+            pt.setInt(6, reiziger.getReiziger_id());
 
-        return true;
+            pt.executeUpdate();
+
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 
-
-
-
     @Override
-    public boolean delete(Reiziger reiziger) throws SQLException {
+    public boolean delete(Reiziger reiziger) {
 
-        String query = "delete from reiziger where reiziger_id = ? and voorletters = ? and tussenvoegsel = ? and achternaam = ? and geboortedatum = ? ";
-        PreparedStatement pt = conn.prepareStatement(query);
+        try {
+            String query = "delete from reiziger where reiziger_id = ? and voorletters = ? and tussenvoegsel = ? and achternaam = ? and geboortedatum = ? ";
+            PreparedStatement pt = conn.prepareStatement(query);
 
-        pt.setInt(1, reiziger.getReiziger_id());
-        pt.setString(2, reiziger.getVoorletters());
-        pt.setString(3, reiziger.getTussenvoegsels());
-        pt.setString(4, reiziger.getAchternaam());
-        pt.setDate(5, reiziger.getGeboortedatum());
+            pt.setInt(1, reiziger.getReiziger_id());
+            pt.setString(2, reiziger.getVoorletters());
+            pt.setString(3, reiziger.getTussenvoegsels());
+            pt.setString(4, reiziger.getAchternaam());
+            pt.setDate(5, reiziger.getGeboortedatum());
 
-        pt.executeUpdate();
+            pt.executeUpdate();
+            return true;
 
+        } catch (Exception e) {
+            return false;
+        }
         //todo boolean goed returnen
-        return true;
-
     }
-
-
-
 
 
     @Override
@@ -84,15 +97,15 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         ResultSet myRs = pt.executeQuery();
 
 
-        Reiziger r = new Reiziger();
+        Reiziger reiziger = new Reiziger();
         while (myRs.next()) {
-            r.setReiziger_id(Integer.parseInt(myRs.getString(1)));
-            r.setVoorletters(myRs.getString(2));
-            r.setAchternaam(myRs.getString(4));
-            r.setGeboortedatum(Date.valueOf(myRs.getString(5)));
+            reiziger.setReiziger_id(Integer.parseInt(myRs.getString(1)));
+            reiziger.setVoorletters(myRs.getString(2));
+            reiziger.setAchternaam(myRs.getString(4));
+            reiziger.setGeboortedatum(Date.valueOf(myRs.getString(5)));
 
         }
-        return r;
+        return reiziger;
 
     }
 
@@ -106,7 +119,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         pt.setDate(1, Date.valueOf(datum));
         ResultSet myRs = pt.executeQuery();
 
-        List<Reiziger> resultaat = conveteerNaarObject(myRs);
+        List<Reiziger> resultaat = conveteerNaarReizigerObject(myRs);
 
         return resultaat;
     }
@@ -117,16 +130,17 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         Statement myStmt = conn.createStatement();
         ResultSet myRs = myStmt.executeQuery("SELECT * FROM reiziger");
 
-        List<Reiziger> resultaat = conveteerNaarObject(myRs);
+        List<Reiziger> resultaat = conveteerNaarReizigerObject(myRs);
 
         return resultaat;
 
     }
 
 
-    public List<Reiziger> conveteerNaarObject(ResultSet myRs) throws SQLException {
+    //deze klasse heb ik zelf toegevoegd zodat findAll & findByDatum er netter uitzien:
+    public List<Reiziger> conveteerNaarReizigerObject(ResultSet myRs) throws SQLException {
 
-        List<Reiziger> testlijst = new ArrayList<>();
+        List<Reiziger> reizigerLijst = new ArrayList<>();
 
         while (myRs.next()) {
             Reiziger r = new Reiziger();
@@ -136,9 +150,9 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             r.setAchternaam(myRs.getString(4));
             r.setGeboortedatum(Date.valueOf(myRs.getString(5)));
 
-            testlijst.add(r);
+            reizigerLijst.add(r);
         }
-        return testlijst;
+        return reizigerLijst;
 
     }
 

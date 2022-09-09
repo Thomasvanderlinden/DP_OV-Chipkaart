@@ -10,12 +10,11 @@ public class Reiziger{
     private String achternaam;
     private Date geboortedatum;
 
+    private Adres adres;
 
     public Reiziger() {
     }
 
-    public Reiziger(int reiziger_id, String voorletters, String tussenvoegsels, String achternaam, Date geboortedatum) {
-    }
 
 
     public int getReiziger_id() {
