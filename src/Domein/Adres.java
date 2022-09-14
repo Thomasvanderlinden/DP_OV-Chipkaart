@@ -8,6 +8,8 @@ public class Adres {
     private String woonplaats;
     private int reiziger_id;
 
+    private Reiziger reiziger;
+
 
 
     public Adres(){}
@@ -19,6 +21,14 @@ public class Adres {
         this.straat = straat;
         this.woonplaats = woonplaats;
         this.reiziger_id = reiziger_id;
+    }
+
+    public Reiziger getReiziger() {
+        return reiziger;
+    }
+
+    public void setReiziger(Reiziger reiziger) {
+        this.reiziger = reiziger;
     }
 
     public int getAdres_id() {

@@ -1,5 +1,7 @@
-package Domein;
+package Percictence;
 
+import Domein.Adres;
+import Domein.Reiziger;
 import java.sql.SQLException;
 import java.util.List;
 

@@ -1,20 +1,33 @@
+import Percictence.AdresDAO;
+import Percictence.AdresDAOPsql;
+import Percictence.ReizigerDAO;
 import Domein.*;
+import Percictence.ReizigerDAOPsql;
 
 import java.sql.*;
 import java.util.List;
 
 public class Main {
 
-    public Main(){
+    public Main() {
     }
+
+    private static Connection connection;
+
 
     public static void main(String[] args) throws SQLException {
 
-        ReizigerDAO rdao = new ReizigerDAOPsql(getConnection());
-        testReizigerDAO(rdao);
+        connection = getConnection();
 
-        AdresDAO adao = new AdresDAOPsql(getConnection());
+        AdresDAOPsql adao = new AdresDAOPsql(connection);
+        ReizigerDAOPsql rdao = new ReizigerDAOPsql(connection, adao);
+
+        rdao.setAdresDAO(adao);
+
+
+        testReizigerDAO(rdao);
         testAdresDAO(adao);
+
 
     }
 
@@ -24,7 +37,6 @@ public class Main {
         Connection myConn = DriverManager.getConnection(url, "postgres", "Oempa.2000");
         return myConn;
     }
-
 
 
     private static void testReizigerDAO(ReizigerDAO rdao) throws SQLException {
@@ -48,7 +60,7 @@ public class Main {
         //haal bepaalde reizigers uit database:
         List<Reiziger> reizigers1 = rdao.findByGbDatum("2002-12-03");
         System.out.println("[Test] ReizigerDAO.findByGbDatum() geeft de volgende reizigers:");
-        for(Reiziger r : reizigers1){
+        for (Reiziger r : reizigers1) {
             System.out.println(r);
         }
         System.out.println();
@@ -101,13 +113,50 @@ public class Main {
         //print reizigerinformatie uit:
         System.out.println(rdao.findReizigerById(25));
         //maak de geupdate reiziger aan
-        Reiziger r3 = new Reiziger( 25, "test3", "test3", "test3", Date.valueOf("1800-12-12"));
+        Reiziger r3 = new Reiziger(25, "test3", "test3", "test3", Date.valueOf("1800-12-12"));
         //update de reiziger
         rdao.update(r3);
         //print de geupdate versie uit
         System.out.println(rdao.findReizigerById(25));
         //verwijder reiziger 3 zodat het de volgende keer weer goed gaat
         rdao.delete(r3);
+
+
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println("reiziger opslaan & dan adres mee test");
+
+        Reiziger r5 = new Reiziger(211, "test5", "test5", "test5", Date.valueOf("1800-12-12"));
+        Adres a5 = new Adres(211, "test5", "test5", "test5", "test5", 211);
+
+        r5.setAdres(a5);
+        rdao.delete(r5);
+
+        rdao.save(r5);
+
+
+        System.out.println("hier moet je zijn");
+        System.out.println();
+
+        Reiziger reiziger = rdao.findReizigerById(100);
+        System.out.println("zo ziet de reiziger er nu uit " + reiziger + reiziger.getAdres());
+
+        Reiziger r6 = new Reiziger(100, "okeeee", "okeeee", "test44", Date.valueOf("1800-12-12"));
+        Adres a6 = new Adres(100, "okeeee", "okeeee", "test44", "test44", 100);
+        r6.setAdres(a6);
+        rdao.update(r6);
+
+        System.out.println("zo ziet de reiziger er nu uit " + rdao.findReizigerById(100) + reiziger.getAdres());
+
+
+        rdao.delete(r6);
+
+
+        System.out.println(r5);
+
+
+
 
     }
 
@@ -116,14 +165,14 @@ public class Main {
         System.out.println("\n---------- Test AdresDAO -------------");
 
 
-        for(Adres a : adao.findAll()){
+        for (Adres a : adao.findAll()) {
             System.out.println(a);
         }
         //test adao.save()
         System.out.println("test adres toevoegen aan tabel/safe");
         //Maak een nieuwe reiziger aan en persisteer deze in de database
 
-        Adres a1 = new Adres(13, "ewf","ees", "ese", "ese", 13);
+        Adres a1 = new Adres(13, "ewf", "ees", "ese", "ese", 13);
 
 
         System.out.println("eerst zijn er zoveel adressen: " + adao.findAll().size());
@@ -137,16 +186,15 @@ public class Main {
         System.out.println();
 
 
-
         System.out.println("test de update functie adres");
         //maak adres aan
         adao.save(a1);
         //print reizigerinformatie uit:
-        List <Adres> lijstMetAdressen = adao.findAll();
+        List<Adres> lijstMetAdressen = adao.findAll();
         System.out.println(lijstMetAdressen.get(7));
 
         //maak de geupdate reiziger aan
-        Adres a2 = new Adres(13,"1234EE",  "test3","test3" , "test3", 13);
+        Adres a2 = new Adres(13, "1234EE", "test3", "test3", "test3", 13);
 
         //update de reiziger
         adao.update(a2);
@@ -156,11 +204,13 @@ public class Main {
         //verwijder reiziger 3 zodat het de volgende keer weer goed gaat
         adao.delete(a2);
 
+        System.out.println();
+        System.out.println();
 
 
-
-
-
+        for(Adres s : adao.findAll()){
+            System.out.println(s);
+        }
 
 
     }

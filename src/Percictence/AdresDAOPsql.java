@@ -1,4 +1,7 @@
-package Domein;
+package Percictence;
+
+import Domein.Adres;
+import Domein.Reiziger;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -7,7 +10,6 @@ import java.util.List;
 public class AdresDAOPsql implements AdresDAO {
 
     private Connection conn;
-
 
     public AdresDAOPsql(Connection conn) {
         this.conn = conn;
@@ -93,16 +95,18 @@ public class AdresDAOPsql implements AdresDAO {
 
         pt.setInt(1, reiziger.getReiziger_id());
         ResultSet myRs = pt.executeQuery();
+        if(myRs.next()) {
 
-        Adres adres = new Adres();
-        adres.setAdres_id(Integer.parseInt(myRs.getString(1)));
-        adres.setPostcode(myRs.getString(2));
-        adres.setHuisnummer(myRs.getString(3));
-        adres.setStraat(myRs.getString(4));
-        adres.setWoonplaats(myRs.getString(5));
-        adres.setReiziger_id(myRs.getInt(6));
-
-        return adres;
+            Adres adres = new Adres();
+            adres.setAdres_id(Integer.parseInt(myRs.getString(1)));
+            adres.setPostcode(myRs.getString(2));
+            adres.setHuisnummer(myRs.getString(3));
+            adres.setStraat(myRs.getString(4));
+            adres.setWoonplaats(myRs.getString(5));
+            adres.setReiziger_id(myRs.getInt(6));
+            return adres;
+        }
+        return null;
     }
 
 

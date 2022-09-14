@@ -80,6 +80,6 @@ public class Reiziger {
                 ", tussenvoegsels='" + tussenvoegsels + '\'' +
                 ", achternaam='" + achternaam + '\'' +
                 ", geboortedatum=" + geboortedatum +
-                '}';
+                '}' + adres;
     }
 }

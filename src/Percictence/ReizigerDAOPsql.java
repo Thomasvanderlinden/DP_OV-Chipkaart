@@ -1,6 +1,8 @@
-package Domein;
+package Percictence;
 
 
+import Domein.Adres;
+import Domein.Reiziger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,16 +10,24 @@ import java.util.List;
 public class ReizigerDAOPsql implements ReizigerDAO {
 
     private Connection conn;
-
+    private AdresDAO adresDAO;
 
     public ReizigerDAOPsql(Connection conn) {
         this.conn = conn;
     }
 
+    public ReizigerDAOPsql(Connection conn, AdresDAO adresDAO) {
+        this.conn = conn;
+        this.adresDAO = adresDAO;
+    }
+
+
+    public void setAdresDAO(AdresDAO adresDAO) {
+        this.adresDAO = adresDAO;
+    }
 
     @Override
     public boolean save(Reiziger reiziger) {
-
 
         try {
             String query = "insert into reiziger(reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum) values (?, ?, ?, ?, ?)";
@@ -31,37 +41,44 @@ public class ReizigerDAOPsql implements ReizigerDAO {
 
             pt.executeUpdate();
 
-            return true;
+            if (reiziger.getAdres() != null) {
+                adresDAO.save(reiziger.getAdres());
 
+            }
+            return true;
         } catch (Exception e) {
             return false;
         }
     }
+
 
     @Override
     public boolean update(Reiziger reiziger) {
 
         try {
             String query = "update reiziger set reiziger_id = ?, voorletters = ?, tussenvoegsel = ?, achternaam = ?, geboortedatum = ? where reiziger_id = ?";
-            PreparedStatement pt = conn.prepareStatement(query);
 
+            PreparedStatement pt = conn.prepareStatement(query);
             pt.setInt(1, reiziger.getReiziger_id());
             pt.setString(2, reiziger.getVoorletters());
             pt.setString(3, reiziger.getTussenvoegsels());
             pt.setString(4, reiziger.getAchternaam());
             pt.setDate(5, reiziger.getGeboortedatum());
-
             pt.setInt(6, reiziger.getReiziger_id());
-
             pt.executeUpdate();
 
+
+            if (reiziger.getAdres() != null) {
+                adresDAO.update(reiziger.getAdres());
+
+            }
             return true;
 
         } catch (Exception e) {
             return false;
+
         }
     }
-
 
     @Override
     public boolean delete(Reiziger reiziger) {
@@ -76,12 +93,21 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             pt.setString(4, reiziger.getAchternaam());
             pt.setDate(5, reiziger.getGeboortedatum());
 
+
+            if (reiziger.getAdres() != null) {
+                adresDAO.delete(reiziger.getAdres());
+
+            }
+            //hier moet het adres eerst verwijderd wordem ivm foreign key constraint
             pt.executeUpdate();
+
             return true;
 
         } catch (Exception e) {
             return false;
+
         }
+
     }
 
 
@@ -103,6 +129,12 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             reiziger.setGeboortedatum(Date.valueOf(myRs.getString(5)));
 
         }
+
+        Adres reizigers_adres = adresDAO.findByReiziger(reiziger);
+        if (reizigers_adres != null) {
+            reiziger.setAdres(reizigers_adres);
+        }
+
         return reiziger;
 
     }
