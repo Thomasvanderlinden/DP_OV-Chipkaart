@@ -1,6 +1,8 @@
 package Domein;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Reiziger {
     private int reiziger_id;
@@ -10,6 +12,9 @@ public class Reiziger {
     private Date geboortedatum;
 
     private Adres adres;
+    private List <OVChipkaart> ovChipkaarts_reiziger = new ArrayList<>();
+
+
 
     public Reiziger() {
     }
@@ -21,6 +26,11 @@ public class Reiziger {
         this.achternaam = achternaam;
         this.geboortedatum = geboortedatum;
     }
+
+    public void ovkaartToevoegen(OVChipkaart ovChipkaart){
+        ovChipkaarts_reiziger.add(ovChipkaart);
+    }
+
 
 
     public Adres getAdres() {
@@ -71,6 +81,14 @@ public class Reiziger {
         this.geboortedatum = geboortedatum;
     }
 
+
+    public List<OVChipkaart> getOvChipkaarts_reiziger() {
+        return ovChipkaarts_reiziger;
+    }
+
+    public void setOvChipkaarts_reiziger(List<OVChipkaart> ovChipkaarts_reiziger) {
+        this.ovChipkaarts_reiziger = ovChipkaarts_reiziger;
+    }
     @Override
     public String toString() {
 
@@ -80,6 +98,6 @@ public class Reiziger {
                 ", tussenvoegsels='" + tussenvoegsels + '\'' +
                 ", achternaam='" + achternaam + '\'' +
                 ", geboortedatum=" + geboortedatum +
-                '}' + adres;
-    }
+                '}' + adres + ovChipkaarts_reiziger;
+    }//todo: if statement is beter
 }

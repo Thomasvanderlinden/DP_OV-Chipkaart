@@ -2,7 +2,9 @@ package Percictence;
 
 
 import Domein.Adres;
+import Domein.OVChipkaart;
 import Domein.Reiziger;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,20 +13,28 @@ public class ReizigerDAOPsql implements ReizigerDAO {
 
     private Connection conn;
     private AdresDAO adresDAO;
+    private OVChipkaartDAO ovChipkaartDAO;
+
 
     public ReizigerDAOPsql(Connection conn) {
         this.conn = conn;
     }
 
-    public ReizigerDAOPsql(Connection conn, AdresDAO adresDAO) {
+
+    public ReizigerDAOPsql(Connection conn, AdresDAO adresDAO, OVChipkaartDAO ovChipkaartDAO) {
         this.conn = conn;
         this.adresDAO = adresDAO;
+        this.ovChipkaartDAO = ovChipkaartDAO;
     }
-
 
     public void setAdresDAO(AdresDAO adresDAO) {
         this.adresDAO = adresDAO;
     }
+
+    public void setOVDAO(OVChipkaartDAO ovChipkaartDAO) {
+        this.ovChipkaartDAO = ovChipkaartDAO;
+    }
+
 
     @Override
     public boolean save(Reiziger reiziger) {
@@ -40,11 +50,18 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             pt.setDate(5, reiziger.getGeboortedatum());
 
             pt.executeUpdate();
-
+            pt.close();
             if (reiziger.getAdres() != null) {
                 adresDAO.save(reiziger.getAdres());
 
             }
+
+            if (reiziger.getOvChipkaarts_reiziger() != null) {
+                for (OVChipkaart o : reiziger.getOvChipkaarts_reiziger()) {
+                    ovChipkaartDAO.save(o);
+                }
+            }
+
             return true;
         } catch (Exception e) {
             return false;
@@ -65,12 +82,18 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             pt.setString(4, reiziger.getAchternaam());
             pt.setDate(5, reiziger.getGeboortedatum());
             pt.setInt(6, reiziger.getReiziger_id());
-            pt.executeUpdate();
 
+            pt.executeUpdate();
+            pt.close();
 
             if (reiziger.getAdres() != null) {
                 adresDAO.update(reiziger.getAdres());
 
+            }
+            if (reiziger.getOvChipkaarts_reiziger() != null) {
+                for (OVChipkaart o : reiziger.getOvChipkaarts_reiziger()) {
+                    ovChipkaartDAO.update(o);
+                }
             }
             return true;
 
@@ -98,9 +121,14 @@ public class ReizigerDAOPsql implements ReizigerDAO {
                 adresDAO.delete(reiziger.getAdres());
 
             }
+            if (reiziger.getOvChipkaarts_reiziger() != null) {
+                for (OVChipkaart o : reiziger.getOvChipkaarts_reiziger()) {
+                    ovChipkaartDAO.delete(o);
+                }
+            }
             //hier moet het adres eerst verwijderd wordem ivm foreign key constraint
             pt.executeUpdate();
-
+            pt.close();
             return true;
 
         } catch (Exception e) {
@@ -134,7 +162,9 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         if (reizigers_adres != null) {
             reiziger.setAdres(reizigers_adres);
         }
-
+        pt.close();
+        myRs.close();
+//todo: alle statements closen:     #done
         return reiziger;
 
     }
@@ -149,8 +179,17 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         pt.setDate(1, Date.valueOf(datum));
         ResultSet myRs = pt.executeQuery();
 
+
+
         List<Reiziger> resultaat = conveteerNaarReizigerObject(myRs);
 
+        for(Reiziger r : resultaat){
+            r.setAdres(adresDAO.findByReiziger(r));
+        }
+        //todo: dit ook met ovchipdoen
+
+        pt.close();
+        myRs.close();
         return resultaat;
     }
 
@@ -161,7 +200,12 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         ResultSet myRs = myStmt.executeQuery("SELECT * FROM reiziger");
 
         List<Reiziger> resultaat = conveteerNaarReizigerObject(myRs);
+        for(Reiziger r : resultaat){
+            r.setAdres(adresDAO.findByReiziger(r));
+        }
+        myStmt.close();
 
+//todo adres meesturen:     #done
         return resultaat;
 
     }

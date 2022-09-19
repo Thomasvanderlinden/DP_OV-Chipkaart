@@ -1,10 +1,8 @@
-import Percictence.AdresDAO;
-import Percictence.AdresDAOPsql;
-import Percictence.ReizigerDAO;
+import Percictence.*;
 import Domein.*;
-import Percictence.ReizigerDAOPsql;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
@@ -20,14 +18,15 @@ public class Main {
         connection = getConnection();
 
         AdresDAOPsql adao = new AdresDAOPsql(connection);
-        ReizigerDAOPsql rdao = new ReizigerDAOPsql(connection, adao);
+        OVChipkaartDAOPsql odao = new OVChipkaartDAOPsql(connection);
+        ReizigerDAOPsql rdao = new ReizigerDAOPsql(connection, adao, odao);
 
         rdao.setAdresDAO(adao);
-
+        rdao.setOVDAO(odao);
 
         testReizigerDAO(rdao);
         testAdresDAO(adao);
-
+        testOVDAO(odao);
 
     }
 
@@ -42,6 +41,8 @@ public class Main {
     private static void testReizigerDAO(ReizigerDAO rdao) throws SQLException {
         System.out.println("\n---------- Test ReizigerDAO -------------");
 
+        System.out.println(rdao.findByGbDatum("1800-12-12"));
+        System.out.println(rdao.findAll());
 
         //test rdao.findall()
         System.out.println("test alle reizigers");
@@ -139,23 +140,33 @@ public class Main {
         System.out.println("hier moet je zijn");
         System.out.println();
 
-        Reiziger reiziger = rdao.findReizigerById(100);
-        System.out.println("zo ziet de reiziger er nu uit " + reiziger + reiziger.getAdres());
+//        Reiziger reiziger = rdao.findReizigerById(100);
+//        System.out.println("zo ziet de reiziger er nu uit " + reiziger + reiziger.getAdres());
+
 
         Reiziger r6 = new Reiziger(100, "okeeee", "okeeee", "test44", Date.valueOf("1800-12-12"));
         Adres a6 = new Adres(100, "okeeee", "okeeee", "test44", "test44", 100);
+        OVChipkaart o6 = new OVChipkaart(1234, Date.valueOf("1900-1-1"), 2, 0, 100);
+        OVChipkaart o7 = new OVChipkaart(5678, Date.valueOf("1900-1-1"), 2, 0, 100);
+
+
+        r6.ovkaartToevoegen(o6);
+        r6.ovkaartToevoegen(o7);
+
         r6.setAdres(a6);
-        rdao.update(r6);
+        r6.setOvChipkaarts_reiziger(r6.getOvChipkaarts_reiziger());
+        rdao.save(r6);
 
-        System.out.println("zo ziet de reiziger er nu uit " + rdao.findReizigerById(100) + reiziger.getAdres());
+        System.out.println(r6.getOvChipkaarts_reiziger());
+//        System.out.println("zo ziet de reiziger er nu uit " + rdao.findReizigerById(100) + reiziger.getAdres());
 
 
+        System.out.println(o6);
         rdao.delete(r6);
 
 
+        System.out.println(r6);
         System.out.println(r5);
-
-
 
 
     }
@@ -208,10 +219,16 @@ public class Main {
         System.out.println();
 
 
-        for(Adres s : adao.findAll()){
+        for (Adres s : adao.findAll()) {
             System.out.println(s);
         }
 
+
+    }
+
+    public static void testOVDAO(OVChipkaartDAOPsql odao) {
+
+        System.out.println("testen");
 
     }
 
