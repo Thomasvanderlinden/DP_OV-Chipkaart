@@ -8,26 +8,22 @@ public class OVChipkaart {
     private Date geldig_tot;
     private int klasse;
     private double saldo;
-    private int reiziger_id;
-
     private Reiziger reiziger;
-
 
     public OVChipkaart() {
     }
 
-    public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, double saldo, int reiziger_id) {
+    public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, double saldo, Reiziger reiziger) {
         this.kaart_nummer = kaart_nummer;
         this.geldig_tot = geldig_tot;
         this.klasse = klasse;
         this.saldo = saldo;
-        this.reiziger_id = reiziger_id;
+        this.reiziger = reiziger;
     }
 
     public int getKaart_nummer() {
         return kaart_nummer;
     }
-
 
     public void setKaart_nummer(int kaart_nummer) {
         this.kaart_nummer = kaart_nummer;
@@ -57,12 +53,12 @@ public class OVChipkaart {
         this.saldo = saldo;
     }
 
-    public int getReiziger_id() {
-        return reiziger_id;
+    public Reiziger getReiziger() {
+        return reiziger;
     }
 
-    public void setReiziger_id(int reiziger_id) {
-        this.reiziger_id = reiziger_id;
+    public void setReiziger(Reiziger reiziger) {
+        this.reiziger = reiziger;
     }
 
     @Override
@@ -72,7 +68,7 @@ public class OVChipkaart {
                 ", geldig_tot=" + geldig_tot +
                 ", klasse=" + klasse +
                 ", saldo=" + +saldo +
-                ", reiziger_id=" + reiziger_id +
+                ", reiziger=" + reiziger +
                 '}';
     }
 }

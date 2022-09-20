@@ -6,11 +6,11 @@ public class Adres {
     private String huisnummer;
     private String straat;
     private String woonplaats;
-//    private int reiziger_id;
     private Reiziger reiziger;
 
 
-    public Adres(){}
+    public Adres() {
+    }
 
     public Adres(int adres_id, String postcode, String huisnummer, String straat, String woonplaats, Reiziger reiziger) {
         this.adres_id = adres_id;
@@ -65,16 +65,27 @@ public class Adres {
         return reiziger.getReiziger_id();
     }
 
+    public Reiziger getReiziger() {
+        return reiziger;
+    }
+
+
+
+    public void setReiziger(Reiziger reiziger) {
+        this.reiziger = reiziger;
+    }
+
 
     @Override
     public String toString() {
-        return "Adres{" +
+        String s = "Adres{" +
                 "adres_id=" + adres_id +
                 ", postcode='" + postcode + '\'' +
                 ", huisnummer='" + huisnummer + '\'' +
                 ", straat='" + straat + '\'' +
                 ", woonplaats='" + woonplaats + '\'' +
-                ", reiziger_id=" + reiziger +
+                ", reiziger_id="  +
                 '}';
+        return s;
     }
 }

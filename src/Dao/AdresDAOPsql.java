@@ -1,4 +1,4 @@
-package Percictence;
+package Dao;
 
 import Domein.Adres;
 import Domein.Reiziger;
@@ -10,11 +10,17 @@ import java.util.List;
 public class AdresDAOPsql implements AdresDAO {
 
     private Connection conn;
+    private ReizigerDAOPsql rdao;
 
     public AdresDAOPsql(Connection conn) {
         this.conn = conn;
+
     }
 
+    public void setRDAO(ReizigerDAOPsql rdao){
+        this.rdao = rdao;
+
+    }
 
     @Override
     public boolean save(Adres adres) {
@@ -35,7 +41,7 @@ public class AdresDAOPsql implements AdresDAO {
 
             return true;
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             return false;
         }
     }
@@ -60,7 +66,7 @@ public class AdresDAOPsql implements AdresDAO {
 
             return true;
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             return false;
         }
 
@@ -78,14 +84,14 @@ public class AdresDAOPsql implements AdresDAO {
             pt.setString(3, adres.getHuisnummer());
             pt.setString(4, adres.getStraat());
             pt.setString(5, adres.getWoonplaats());
-            pt.setInt(6, adres.getAdres_id());
+            pt.setInt(6, adres.getReiziger_id());
 
             pt.executeUpdate();
             pt.close();
 
             return true;
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             return false;
         }
     }
@@ -101,13 +107,16 @@ public class AdresDAOPsql implements AdresDAO {
 
         if (myRs.next()) {
 
-            Adres adres = new Adres();
-            adres.setAdres_id(Integer.parseInt(myRs.getString(1)));
-            adres.setPostcode(myRs.getString(2));
-            adres.setHuisnummer(myRs.getString(3));
-            adres.setStraat(myRs.getString(4));
-            adres.setWoonplaats(myRs.getString(5));
-            adres.setReiziger_id(myRs.getInt(6));
+
+
+            int id = myRs.getInt("adres_id");
+            String Pc = myRs.getString("postcode");
+            String Hn = myRs.getString("huisnummer");
+            String Str = myRs.getString("straat");
+            String Wp = myRs.getString("woonplaats");
+            Adres adres = new Adres(id, Pc, Hn, Str, Wp, reiziger);
+
+
             return adres;
         }
         myRs.close();
@@ -125,6 +134,7 @@ public class AdresDAOPsql implements AdresDAO {
 
         List<Adres> resultaat = conveteerNaarAdresObject(myRs);
 
+
         myStmt.close();
         myRs.close();
         return resultaat;
@@ -137,16 +147,19 @@ public class AdresDAOPsql implements AdresDAO {
         List<Adres> adreslijst = new ArrayList<>();
 
         while (myRs.next()) {
-            Adres a1 = new Adres();
 
-            a1.setAdres_id(Integer.parseInt(myRs.getString(1)));
-            a1.setPostcode(myRs.getString(2));
-            a1.setHuisnummer(myRs.getString(3));
-            a1.setStraat(myRs.getString(4));
-            a1.setWoonplaats(myRs.getString(5));
-            a1.setReiziger_id(myRs.getInt(6));
-//todo niet alleen het id, maar ook de hele reiziger meesturen:
-            adreslijst.add(a1);
+
+            int id = myRs.getInt("adres_id");
+            String Pc = myRs.getString("postcode");
+            String Hn = myRs.getString("huisnummer");
+            String Str = myRs.getString("straat");
+            String Wp = myRs.getString("woonplaats");
+            int Rid = myRs.getInt("reiziger_id");
+
+            Adres adres = new Adres(id, Pc, Hn, Str, Wp, rdao.findReizigerById(Rid));
+
+            adreslijst.add(adres);
+
         }
         myRs.close();
         return adreslijst;

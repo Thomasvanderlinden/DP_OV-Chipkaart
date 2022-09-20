@@ -1,4 +1,4 @@
-package Percictence;
+package Dao;
 
 
 import Domein.Adres;
@@ -63,7 +63,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             }
 
             return true;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             return false;
         }
     }
@@ -97,7 +97,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             }
             return true;
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             return false;
 
         }
@@ -131,7 +131,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             pt.close();
             return true;
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             return false;
 
         }
@@ -162,9 +162,14 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         if (reizigers_adres != null) {
             reiziger.setAdres(reizigers_adres);
         }
+
+        List<OVChipkaart> o = ovChipkaartDAO.findByReiziger(reiziger);
+        if (o != null) {
+            reiziger.setOvChipkaarts_reiziger(o);
+        }
         pt.close();
         myRs.close();
-//todo: alle statements closen:     #done
+
         return reiziger;
 
     }
@@ -179,14 +184,15 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         pt.setDate(1, Date.valueOf(datum));
         ResultSet myRs = pt.executeQuery();
 
-
-
         List<Reiziger> resultaat = conveteerNaarReizigerObject(myRs);
 
-        for(Reiziger r : resultaat){
+        for (Reiziger r : resultaat) {
             r.setAdres(adresDAO.findByReiziger(r));
         }
-        //todo: dit ook met ovchipdoen
+        for (Reiziger r : resultaat) {
+            r.setOvChipkaarts_reiziger(ovChipkaartDAO.findByReiziger(r));
+        }
+
 
         pt.close();
         myRs.close();
@@ -200,12 +206,9 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         ResultSet myRs = myStmt.executeQuery("SELECT * FROM reiziger");
 
         List<Reiziger> resultaat = conveteerNaarReizigerObject(myRs);
-        for(Reiziger r : resultaat){
-            r.setAdres(adresDAO.findByReiziger(r));
-        }
+
         myStmt.close();
 
-//todo adres meesturen:     #done
         return resultaat;
 
     }
@@ -223,6 +226,12 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             r.setVoorletters(myRs.getString(2));
             r.setAchternaam(myRs.getString(4));
             r.setGeboortedatum(Date.valueOf(myRs.getString(5)));
+
+            Adres a = adresDAO.findByReiziger(r);
+            r.setAdres(a);
+
+            List<OVChipkaart> ov = ovChipkaartDAO.findByReiziger(r);
+            r.setOvChipkaarts_reiziger(ov);
 
             reizigerLijst.add(r);
         }

@@ -1,8 +1,8 @@
-import Percictence.*;
+import Dao.*;
 import Domein.*;
 
 import java.sql.*;
-import java.util.ArrayList;
+
 import java.util.List;
 
 public class Main {
@@ -19,15 +19,18 @@ public class Main {
 
         AdresDAOPsql adao = new AdresDAOPsql(connection);
         OVChipkaartDAOPsql odao = new OVChipkaartDAOPsql(connection);
-        ReizigerDAOPsql rdao = new ReizigerDAOPsql(connection, adao, odao);
+        ReizigerDAOPsql rdao = new ReizigerDAOPsql(connection);
+
+        adao.setRDAO(rdao);
+        odao.setRDAO(rdao);
 
         rdao.setAdresDAO(adao);
         rdao.setOVDAO(odao);
 
+
         testReizigerDAO(rdao);
         testAdresDAO(adao);
         testOVDAO(odao);
-
     }
 
 
@@ -41,8 +44,8 @@ public class Main {
     private static void testReizigerDAO(ReizigerDAO rdao) throws SQLException {
         System.out.println("\n---------- Test ReizigerDAO -------------");
 
-        System.out.println(rdao.findByGbDatum("1800-12-12"));
-        System.out.println(rdao.findAll());
+//        System.out.println(rdao.findByGbDatum("1800-12-12"));
+//        System.out.println(rdao.findAll());
 
         //test rdao.findall()
         System.out.println("test alle reizigers");
@@ -129,7 +132,7 @@ public class Main {
         System.out.println("reiziger opslaan & dan adres mee test");
 
         Reiziger r5 = new Reiziger(211, "test5", "test5", "test5", Date.valueOf("1800-12-12"));
-        Adres a5 = new Adres(211, "test5", "test5", "test5", "test5", 211);
+        Adres a5 = new Adres(211, "test5", "test5", "test5", "test5", r5);
 
         r5.setAdres(a5);
         rdao.delete(r5);
@@ -145,9 +148,9 @@ public class Main {
 
 
         Reiziger r6 = new Reiziger(100, "okeeee", "okeeee", "test44", Date.valueOf("1800-12-12"));
-        Adres a6 = new Adres(100, "okeeee", "okeeee", "test44", "test44", 100);
-        OVChipkaart o6 = new OVChipkaart(1234, Date.valueOf("1900-1-1"), 2, 0, 100);
-        OVChipkaart o7 = new OVChipkaart(5678, Date.valueOf("1900-1-1"), 2, 0, 100);
+        Adres a6 = new Adres(100, "okeeee", "okeeee", "test44", "test44", r6);
+        OVChipkaart o6 = new OVChipkaart(1234, Date.valueOf("1900-1-1"), 2, 0, r6);
+        OVChipkaart o7 = new OVChipkaart(5678, Date.valueOf("1900-1-1"), 2, 0, r6);
 
 
         r6.ovkaartToevoegen(o6);
@@ -175,15 +178,17 @@ public class Main {
 
         System.out.println("\n---------- Test AdresDAO -------------");
 
+        adao.findAll();
 
         for (Adres a : adao.findAll()) {
             System.out.println(a);
+            System.out.println(a.getReiziger());
         }
         //test adao.save()
         System.out.println("test adres toevoegen aan tabel/safe");
         //Maak een nieuwe reiziger aan en persisteer deze in de database
-
-        Adres a1 = new Adres(13, "ewf", "ees", "ese", "ese", 13);
+        Reiziger r9 = new Reiziger(13,"d","d","d",Date.valueOf("1900-1-1"));
+        Adres a1 = new Adres(13, "ewf", "ees", "ese", "ese", r9);
 
 
         System.out.println("eerst zijn er zoveel adressen: " + adao.findAll().size());
@@ -205,7 +210,9 @@ public class Main {
         System.out.println(lijstMetAdressen.get(7));
 
         //maak de geupdate reiziger aan
-        Adres a2 = new Adres(13, "1234EE", "test3", "test3", "test3", 13);
+        Reiziger r19 = new Reiziger(13,"d","d","d",Date.valueOf("1900-1-1"));
+
+        Adres a2 = new Adres(13, "1234EE", "test3", "test3", "test3", r19);
 
         //update de reiziger
         adao.update(a2);
@@ -218,7 +225,6 @@ public class Main {
         System.out.println();
         System.out.println();
 
-
         for (Adres s : adao.findAll()) {
             System.out.println(s);
         }
@@ -226,9 +232,9 @@ public class Main {
 
     }
 
-    public static void testOVDAO(OVChipkaartDAOPsql odao) {
-
-        System.out.println("testen");
+    public static void testOVDAO(OVChipkaartDAOPsql odao) throws SQLException {
+        for(OVChipkaart o : odao.findAll()){;
+            System.out.println(o);}
 
     }
 

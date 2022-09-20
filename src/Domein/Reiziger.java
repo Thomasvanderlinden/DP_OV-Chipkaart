@@ -31,6 +31,8 @@ public class Reiziger {
         ovChipkaarts_reiziger.add(ovChipkaart);
     }
 
+    public void ovkaartVerwijderen(OVChipkaart ovChipkaart){ovChipkaarts_reiziger.remove(ovChipkaart);}
+
 
 
     public Adres getAdres() {
@@ -99,5 +101,5 @@ public class Reiziger {
                 ", achternaam='" + achternaam + '\'' +
                 ", geboortedatum=" + geboortedatum +
                 '}' + adres + ovChipkaarts_reiziger;
-    }//todo: if statement is beter
+    }
 }
