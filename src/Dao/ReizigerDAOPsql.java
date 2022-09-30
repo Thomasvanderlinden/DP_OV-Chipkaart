@@ -151,10 +151,10 @@ public class ReizigerDAOPsql implements ReizigerDAO {
 
         Reiziger reiziger = new Reiziger();
         while (myRs.next()) {
-            reiziger.setReiziger_id(Integer.parseInt(myRs.getString(1)));
+            reiziger.setReiziger_id(myRs.getInt(1));
             reiziger.setVoorletters(myRs.getString(2));
             reiziger.setAchternaam(myRs.getString(4));
-            reiziger.setGeboortedatum(Date.valueOf(myRs.getString(5)));
+            reiziger.setGeboortedatum(myRs.getDate(5));
 
         }
 
