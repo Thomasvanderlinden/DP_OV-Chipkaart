@@ -20,17 +20,22 @@ public class Main {
         AdresDAOPsql adao = new AdresDAOPsql(connection);
         OVChipkaartDAOPsql odao = new OVChipkaartDAOPsql(connection);
         ReizigerDAOPsql rdao = new ReizigerDAOPsql(connection);
+        ProductDAOPsql pdao = new ProductDAOPsql(connection);
+
 
         adao.setRDAO(rdao);
         odao.setRDAO(rdao);
+        odao.setPDAO(pdao);
 
         rdao.setAdresDAO(adao);
         rdao.setOVDAO(odao);
 
+        pdao.setOVDAO(odao);
 
         testReizigerDAO(rdao);
         testAdresDAO(adao);
-        testOVDAO(odao);
+        testOVDAO(odao, rdao, pdao);
+        testPDAO(pdao);
     }
 
 
@@ -232,9 +237,42 @@ public class Main {
 
     }
 
-    public static void testOVDAO(OVChipkaartDAOPsql odao) throws SQLException {
+    public static void testOVDAO(OVChipkaartDAOPsql odao, ReizigerDAOPsql rdao, ProductDAOPsql pdao) throws SQLException {
         for(OVChipkaart o : odao.findAll()){;
-            System.out.println(o);}
+            System.out.println(o);
+
+        }
+//        Reiziger r = new Reiziger(110, "teseten", "sdfds", "sdfsd", Date.valueOf("1900-1-1"));
+//        //rdao.save(r);
+//        OVChipkaart ov = new OVChipkaart(111111, Date.valueOf("1900-1-1"), 2, 39, r);
+//        Product p1 = new Product(11, "test","test", 39);
+//        Product p2 = new Product(12, "test1","test1", 40);
+//
+//        odao.delete(ov);
+//
+//
+//        ov.voegProductToeAanOVChipkaart(p1);
+//        ov.voegProductToeAanOVChipkaart(p2);
+//
+//        ov.setProducten(ov.getProducten());
+//
+//
+//        odao.save(ov);
+//
+        Reiziger r = new Reiziger(111, "teseten", "sdfds", "sdfsd", Date.valueOf("1900-1-1"));
+
+        OVChipkaart ov = new OVChipkaart(501, Date.valueOf("1900-1-1"), 2, 39, r);
+        ov.voegProductToeAanOVChipkaart(new Product(55, "thomas", "thomas", 100));
+        odao.save(ov);
+
+    }
+
+    public static void testPDAO(ProductDAOPsql pdao) throws SQLException {
+//        pdao.save(new Product(10, "thomas", "thomas", 100));
+//        pdao.update(new Product(10, "hans", "hans", 50));
+//        pdao.delete(new Product(10, "hans", "hans", 50));
+
+
 
     }
 

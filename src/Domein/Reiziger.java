@@ -12,6 +12,7 @@ public class Reiziger {
     private Date geboortedatum;
 
     private Adres adres;
+
     private List <OVChipkaart> ovChipkaarts_reiziger = new ArrayList<>();
 
 
@@ -100,6 +101,7 @@ public class Reiziger {
                 ", tussenvoegsels='" + tussenvoegsels + '\'' +
                 ", achternaam='" + achternaam + '\'' +
                 ", geboortedatum=" + geboortedatum +
-                '}' + adres + ovChipkaarts_reiziger;
+                '}';
     }
+    //+ adres + ovChipkaarts_reiziger;
 }

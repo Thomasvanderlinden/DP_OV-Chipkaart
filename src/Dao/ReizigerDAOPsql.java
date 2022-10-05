@@ -64,6 +64,8 @@ public class ReizigerDAOPsql implements ReizigerDAO {
 
             return true;
         } catch (SQLException e) {
+            e.printStackTrace();
+
             return false;
         }
     }
@@ -98,6 +100,8 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             return true;
 
         } catch (SQLException e) {
+            e.printStackTrace();
+
             return false;
 
         }
@@ -132,6 +136,8 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             return true;
 
         } catch (SQLException e) {
+            e.printStackTrace();
+
             return false;
 
         }

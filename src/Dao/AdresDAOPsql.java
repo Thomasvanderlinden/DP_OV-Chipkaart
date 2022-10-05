@@ -14,7 +14,6 @@ public class AdresDAOPsql implements AdresDAO {
 
     public AdresDAOPsql(Connection conn) {
         this.conn = conn;
-
     }
 
     public void setRDAO(ReizigerDAOPsql rdao){
