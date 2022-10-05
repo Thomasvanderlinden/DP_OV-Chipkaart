@@ -192,7 +192,7 @@ public class Main {
         //test adao.save()
         System.out.println("test adres toevoegen aan tabel/safe");
         //Maak een nieuwe reiziger aan en persisteer deze in de database
-        Reiziger r9 = new Reiziger(13,"d","d","d",Date.valueOf("1900-1-1"));
+        Reiziger r9 = new Reiziger(13, "d", "d", "d", Date.valueOf("1900-1-1"));
         Adres a1 = new Adres(13, "ewf", "ees", "ese", "ese", r9);
 
 
@@ -215,7 +215,7 @@ public class Main {
         System.out.println(lijstMetAdressen.get(7));
 
         //maak de geupdate reiziger aan
-        Reiziger r19 = new Reiziger(13,"d","d","d",Date.valueOf("1900-1-1"));
+        Reiziger r19 = new Reiziger(13, "d", "d", "d", Date.valueOf("1900-1-1"));
 
         Adres a2 = new Adres(13, "1234EE", "test3", "test3", "test3", r19);
 
@@ -238,7 +238,8 @@ public class Main {
     }
 
     public static void testOVDAO(OVChipkaartDAOPsql odao, ReizigerDAOPsql rdao, ProductDAOPsql pdao) throws SQLException {
-        for(OVChipkaart o : odao.findAll()){;
+        for (OVChipkaart o : odao.findAll()) {
+            ;
             System.out.println(o);
 
         }
@@ -259,19 +260,27 @@ public class Main {
 //
 //        odao.save(ov);
 //
-        Reiziger r = new Reiziger(111, "teseten", "sdfds", "sdfsd", Date.valueOf("1900-1-1"));
-
-        OVChipkaart ov = new OVChipkaart(501, Date.valueOf("1900-1-1"), 2, 39, r);
-        ov.voegProductToeAanOVChipkaart(new Product(55, "thomas", "thomas", 100));
-        odao.save(ov);
+//        Reiziger r = new Reiziger(13, "teseten", "sdfds", "sdfsd", Date.valueOf("1900-1-1"));
+//
+//        OVChipkaart ov = new OVChipkaart(400, Date.valueOf("1900-1-1"), 2, 39, r);
+//        ov.voegProductToeAanOVChipkaart(new Product(70, "thomas", "thomas", 100));
+//        //odao.delete(ov);
+//        //dao.save(ov);
+//
+//        odao.update(ov);
 
     }
 
     public static void testPDAO(ProductDAOPsql pdao) throws SQLException {
-//        pdao.save(new Product(10, "thomas", "thomas", 100));
+        Reiziger r = new Reiziger(5, "teseten", "sdfds", "sdfsd", Date.valueOf("1900-1-1"));
+        OVChipkaart ov = new OVChipkaart(18326, Date.valueOf("1900-1-1"), 2, 4040, r);
+
+        Product p = new Product(81, "Harm", "Harm", 100);
+        p.voegOVChipkaartToeAanProduct(ov);
+
+        pdao.save(p);
 //        pdao.update(new Product(10, "hans", "hans", 50));
 //        pdao.delete(new Product(10, "hans", "hans", 50));
-
 
 
     }

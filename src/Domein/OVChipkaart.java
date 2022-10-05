@@ -3,6 +3,8 @@ package Domein;
 import java.sql.Date;
 import java.util.ArrayList;
 
+import static Domein.Product.ovchipkaarten;
+
 public class OVChipkaart {
 
     private int kaart_nummer;
@@ -11,7 +13,7 @@ public class OVChipkaart {
     private double saldo;
     private Reiziger reiziger;
 
-    private ArrayList<Product> producten = new ArrayList();
+    public static ArrayList<Product> producten = new ArrayList();
 
     public OVChipkaart() {
     }
@@ -26,10 +28,12 @@ public class OVChipkaart {
 
     public void voegProductToeAanOVChipkaart(Product product){
         producten.add(product);
+        ovchipkaarten.add(this);
     }
 
     public void verwijderProductVanOVChipkaart(Product product){
         producten.remove(product);
+        ovchipkaarten.remove(this);
     }
 
     public ArrayList<Product> getProducten() {

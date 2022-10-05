@@ -2,13 +2,15 @@ package Domein;
 
 import java.util.ArrayList;
 
+import static Domein.OVChipkaart.producten;
+
 public class Product {
     private int product_nummer;
     private String naam;
     private String beschrijving;
     private int prijs;
 
-    private ArrayList<OVChipkaart> ovchipkaarten = new ArrayList<>();
+    public static ArrayList<OVChipkaart> ovchipkaarten = new ArrayList<>();
 
     public Product(int product_nummer, String naam, String beschrijving, int prijs){
         this.product_nummer = product_nummer;
@@ -21,10 +23,12 @@ public class Product {
 
     public void voegOVChipkaartToeAanProduct(OVChipkaart ovChipkaart){
         ovchipkaarten.add(ovChipkaart);
+        producten.add(this);
     }
 
     public void verwijderOVChipkaartVanProduct(OVChipkaart ovChipkaart){
         ovchipkaarten.remove(ovChipkaart);
+        producten.remove(this);
     }
 
 

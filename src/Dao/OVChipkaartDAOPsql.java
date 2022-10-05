@@ -4,6 +4,7 @@ import Domein.OVChipkaart;
 import Domein.Product;
 import Domein.Reiziger;
 
+import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,11 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
     public OVChipkaartDAOPsql(Connection conn) {
         this.conn = conn;
     }
-    public void setPDAO(ProductDAOPsql pdao){this.pdao = pdao;}
+
+    public void setPDAO(ProductDAOPsql pdao) {
+        this.pdao = pdao;
+    }
+
     public void setRDAO(ReizigerDAOPsql rdao) {
         this.rdao = rdao;
     }
@@ -41,25 +46,8 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             pt.close();
 
 
-            for(Product p : ovChipkaart.getProducten()){
+            for (Product p : ovChipkaart.getProducten()) {
                 pdao.save(p);
-            }
-
-            if(ovChipkaart.getProducten() != null){
-                for(Product product : ovChipkaart.getProducten()){
-
-                    String queryOpslaanProducten = "insert into ov_chipkaart_product values(?,?,?,?)";
-                    PreparedStatement ptOpslaanProducten = conn.prepareStatement(queryOpslaanProducten);
-
-                    ptOpslaanProducten.setInt(1, ovChipkaart.getKaart_nummer());
-                    ptOpslaanProducten.setInt(2, product.getProduct_nummer());
-                    ptOpslaanProducten.setString(3, "hier");
-                    ptOpslaanProducten.setDate(4, Date.valueOf("1900-1-1"));
-
-                    ptOpslaanProducten.executeUpdate();
-                    ptOpslaanProducten.close();
-
-                }
             }
 
             //todo: als je hier een ovchipkaart opslaat, moet je ook kijken of die
@@ -107,6 +95,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
     public boolean delete(OVChipkaart ovChipkaart) {
 
         try {
+
             String query = "delete from ov_chipkaart where kaart_nummer = ? and geldig_tot = ? and klasse = ? and saldo = ? and reiziger_id = ?";
             PreparedStatement pt = conn.prepareStatement(query);
 
