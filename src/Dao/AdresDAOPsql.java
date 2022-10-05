@@ -106,8 +106,6 @@ public class AdresDAOPsql implements AdresDAO {
 
         if (myRs.next()) {
 
-
-
             int id = myRs.getInt("adres_id");
             String Pc = myRs.getString("postcode");
             String Hn = myRs.getString("huisnummer");

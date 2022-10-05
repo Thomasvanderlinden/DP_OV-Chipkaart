@@ -24,6 +24,7 @@ public class OVChipkaart {
         this.klasse = klasse;
         this.saldo = saldo;
         this.reiziger = reiziger;
+        setProducten(producten);
     }
 
     public void voegProductToeAanOVChipkaart(Product product){

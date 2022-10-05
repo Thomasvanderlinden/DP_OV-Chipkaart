@@ -31,6 +31,8 @@ public class Main {
         rdao.setOVDAO(odao);
 
         pdao.setOVDAO(odao);
+        pdao.setRDAO(rdao);
+
 
         testReizigerDAO(rdao);
         testAdresDAO(adao);
@@ -239,7 +241,6 @@ public class Main {
 
     public static void testOVDAO(OVChipkaartDAOPsql odao, ReizigerDAOPsql rdao, ProductDAOPsql pdao) throws SQLException {
         for (OVChipkaart o : odao.findAll()) {
-            ;
             System.out.println(o);
 
         }
@@ -268,22 +269,31 @@ public class Main {
 //        //dao.save(ov);
 //
 //        odao.update(ov);
-
+        System.out.println();
+        System.out.println();
     }
 
     public static void testPDAO(ProductDAOPsql pdao) throws SQLException {
         Reiziger r = new Reiziger(5, "teseten", "sdfds", "sdfsd", Date.valueOf("1900-1-1"));
-        OVChipkaart ov = new OVChipkaart(18326, Date.valueOf("1900-1-1"), 2, 4040, r);
-
+        OVChipkaart ov = new OVChipkaart(18326, Date.valueOf("1900-1-1"), 2, 4040, r, p);
+//
         Product p = new Product(81, "Harm", "Harm", 100);
-        p.voegOVChipkaartToeAanProduct(ov);
-
-        pdao.save(p);
+//        p.voegOVChipkaartToeAanProduct(ov);
+//
+//        pdao.save(p);
 //        pdao.update(new Product(10, "hans", "hans", 50));
 //        pdao.delete(new Product(10, "hans", "hans", 50));
 
+        System.out.println(pdao.findByOVChipkaart(ov));
 
+
+        System.out.println();
+
+        for(Product pr : pdao.findAll()){
+            System.out.println(pr);
+        }
     }
+
 
 
 }

@@ -1,6 +1,7 @@
 package Dao;
 
 
+import Domein.OVChipkaart;
 import Domein.Product;
 
 import java.sql.SQLException;
@@ -10,8 +11,8 @@ public interface ProductDAO {
     boolean save(Product product) throws SQLException;
     boolean update(Product product);
     boolean delete(Product product);
-    Product findReizigerById(int id) throws SQLException;
-    List<Product> findByGbDatum(String datum) throws SQLException;
+
+    List<Product> findByOVChipkaart(OVChipkaart ovChipkaart) throws SQLException;
     List<Product> findAll() throws SQLException;
 
 }

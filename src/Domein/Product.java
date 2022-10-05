@@ -8,11 +8,11 @@ public class Product {
     private int product_nummer;
     private String naam;
     private String beschrijving;
-    private int prijs;
+    private double prijs;
 
     public static ArrayList<OVChipkaart> ovchipkaarten = new ArrayList<>();
 
-    public Product(int product_nummer, String naam, String beschrijving, int prijs){
+    public Product(int product_nummer, String naam, String beschrijving, double prijs){
         this.product_nummer = product_nummer;
         this.naam = naam;
         this.beschrijving = beschrijving;
@@ -50,7 +50,7 @@ public class Product {
     public void setBeschrijving(String beschrijving) {
         this.beschrijving = beschrijving;
     }
-    public int getPrijs() {
+    public double getPrijs() {
         return prijs;
     }
     public void setPrijs(int prijs) {

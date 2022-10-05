@@ -1,19 +1,21 @@
 package Dao;
 
+import Domein.Adres;
 import Domein.OVChipkaart;
 import Domein.Product;
+import org.postgresql.replication.fluent.physical.PhysicalReplicationOptions;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class ProductDAOPsql implements ProductDAO {
 
 
     private Connection conn;
     private OVChipkaartDAOPsql ovdao;
+    private ReizigerDAOPsql rdao;
 
     public ProductDAOPsql(Connection conn) {
         this.conn = conn;
@@ -22,6 +24,10 @@ public class ProductDAOPsql implements ProductDAO {
     public void setOVDAO(OVChipkaartDAOPsql ovdao) {
         this.ovdao = ovdao;
 
+    }
+
+    public void setRDAO(ReizigerDAOPsql rdao) {
+        this.rdao = rdao;
     }
 
 
@@ -34,7 +40,7 @@ public class ProductDAOPsql implements ProductDAO {
             pt.setInt(1, product.getProduct_nummer());
             pt.setString(2, product.getNaam());
             pt.setString(3, product.getBeschrijving());
-            pt.setInt(4, product.getPrijs());
+            pt.setDouble(4, product.getPrijs());
 
             pt.executeUpdate();
             pt.close();
@@ -81,7 +87,7 @@ public class ProductDAOPsql implements ProductDAO {
             pt.setInt(1, product.getProduct_nummer());
             pt.setString(2, product.getNaam());
             pt.setString(3, product.getBeschrijving());
-            pt.setInt(4, product.getPrijs());
+            pt.setDouble(4, product.getPrijs());
 
             pt.setInt(5, product.getProduct_nummer());
 
@@ -144,7 +150,7 @@ public class ProductDAOPsql implements ProductDAO {
             pt.setInt(1, product.getProduct_nummer());
             pt.setString(2, product.getNaam());
             pt.setString(3, product.getBeschrijving());
-            pt.setInt(4, product.getPrijs());
+            pt.setDouble(4, product.getPrijs());
 
             pt.executeUpdate();
             pt.close();
@@ -159,17 +165,69 @@ public class ProductDAOPsql implements ProductDAO {
     }
 
     @Override
-    public Product findReizigerById(int id) throws SQLException {
-        return null;
+    public List<Product> findByOVChipkaart(OVChipkaart ovChipkaart) throws SQLException {
+        String query =
+                "select product.product_nummer, product.naam, product.beschrijving, product.prijs\n" +
+                        "from ov_chipkaart\n" +
+                        "inner join ov_chipkaart_product on ov_chipkaart.kaart_nummer = ov_chipkaart_product.Kaart_nummer\n" +
+                        "inner join product on ov_chipkaart_product.product_nummer = product.product_nummer\n" +
+                        "where ov_chipkaart.kaart_nummer = ?";
+
+
+        PreparedStatement pt = conn.prepareStatement(query);
+
+        pt.setInt(1, ovChipkaart.getKaart_nummer());
+        ResultSet myRs = pt.executeQuery();
+
+        List<Product> productenLijst = new ArrayList<>();
+
+
+        if (myRs.next()) {
+            int pn = myRs.getInt("product_nummer");
+            String nm = myRs.getString("naam");
+            String bs = myRs.getString("beschrijving");
+            double pr = myRs.getDouble("prijs");
+
+            Product product = new Product(pn, nm, bs, pr);
+            productenLijst.add(product);
+
+        }
+        return productenLijst;
     }
 
-    @Override
-    public List<Product> findByGbDatum(String datum) throws SQLException {
-        return null;
-    }
 
     @Override
     public List<Product> findAll() throws SQLException {
-        return null;
+        Statement myStmt = conn.createStatement();
+        ResultSet myRs = myStmt.executeQuery("SELECT * FROM product");
+
+        List<Product> resultaat = conveteerNaarAdresObject(myRs);
+
+        myStmt.close();
+        myRs.close();
+
+        return resultaat;
+    }
+
+
+    public List<Product> conveteerNaarAdresObject(ResultSet myRs) throws SQLException {
+
+        List<Product> productenLijst = new ArrayList<>();
+
+        while (myRs.next()) {
+            int pn = myRs.getInt("product_nummer");
+            String nm = myRs.getString("naam");
+            String bs = myRs.getString("beschrijving");
+            double pr = myRs.getDouble("prijs");
+
+            Product product = new Product(pn, nm, bs, pr);
+            productenLijst.add(product);
+
+        }
+        myRs.close();
+
+        return productenLijst;
+
     }
 }
+
