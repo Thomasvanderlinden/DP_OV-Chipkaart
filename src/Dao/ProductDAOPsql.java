@@ -62,12 +62,7 @@ public class ProductDAOPsql implements ProductDAO {
 
                 }
             }
-            //todo: geen idee of dit ook moet:
-//            if (product.getOvchipkaarten() != null) {
-//                for (OVChipkaart o : product.getOvchipkaarten()) {
-//                    ovdao.save(o);
-//                }
-//            }
+
 
             return true;
         } catch (SQLException e) {

@@ -2,7 +2,6 @@ package Domein;
 
 import java.util.ArrayList;
 
-import static Domein.OVChipkaart.producten;
 
 public class Product {
     private int product_nummer;
@@ -10,25 +9,26 @@ public class Product {
     private String beschrijving;
     private double prijs;
 
-    public static ArrayList<OVChipkaart> ovchipkaarten = new ArrayList<>();
+    public ArrayList<OVChipkaart> ovchipkaarten = new ArrayList<>();
 
     public Product(int product_nummer, String naam, String beschrijving, double prijs){
         this.product_nummer = product_nummer;
         this.naam = naam;
         this.beschrijving = beschrijving;
         this.prijs = prijs;
+        setOvchipkaarten(ovchipkaarten);
     }
     public Product(){}
 
 
     public void voegOVChipkaartToeAanProduct(OVChipkaart ovChipkaart){
-        ovchipkaarten.add(ovChipkaart);
-        producten.add(this);
+        getOvchipkaarten().add(ovChipkaart);
+        ovChipkaart.producten.add(this);
     }
 
     public void verwijderOVChipkaartVanProduct(OVChipkaart ovChipkaart){
-        ovchipkaarten.remove(ovChipkaart);
-        producten.remove(this);
+        getOvchipkaarten().remove(ovChipkaart);
+        ovChipkaart.producten.remove(this);
     }
 
 
