@@ -15,7 +15,8 @@ public class OVChipkaart {
     public List<Product> producten = new ArrayList();
 
 
-    public OVChipkaart(){}
+    public OVChipkaart() {
+    }
 
     public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, double saldo, Reiziger reiziger) {
         this.kaart_nummer = kaart_nummer;
@@ -23,7 +24,6 @@ public class OVChipkaart {
         this.klasse = klasse;
         this.saldo = saldo;
         this.reiziger = reiziger;
-        setProducten(producten);
     }
 
     public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, double saldo) {
@@ -31,20 +31,17 @@ public class OVChipkaart {
         this.geldig_tot = geldig_tot;
         this.klasse = klasse;
         this.saldo = saldo;
-        setProducten(producten);
     }
 
 
-
-
-    public void voegProductToeAanOVChipkaart(Product product){
-        this.getProducten().add(product);
-        product.ovchipkaarten.add(this);
+    public void voegProductToeAanOVChipkaart(Product product) {
+        this.producten.add(product);
+        //...todo: hier ook nog toevoegen aan de andere lijst
     }
 
-    public void verwijderProductVanOVChipkaart(Product product){
-        producten.remove(product);
-        product.ovchipkaarten.remove(this);
+    public void verwijderProductVanOVChipkaart(Product product) {
+        this.producten.remove(product);
+        //...todo: hier ook nog toevoegen aan de andere lijst
     }
 
 
@@ -59,30 +56,39 @@ public class OVChipkaart {
     public int getKaart_nummer() {
         return kaart_nummer;
     }
+
     public void setKaart_nummer(int kaart_nummer) {
         this.kaart_nummer = kaart_nummer;
     }
+
     public Date getGeldig_tot() {
         return geldig_tot;
     }
+
     public void setGeldig_tot(Date geldig_tot) {
         this.geldig_tot = geldig_tot;
     }
+
     public int getKlasse() {
         return klasse;
     }
+
     public void setKlasse(int klasse) {
         this.klasse = klasse;
     }
+
     public double getSaldo() {
         return saldo;
     }
+
     public void setSaldo(double saldo) {
         this.saldo = saldo;
     }
+
     public Reiziger getReiziger() {
         return reiziger;
     }
+
     public void setReiziger(Reiziger reiziger) {
         this.reiziger = reiziger;
     }

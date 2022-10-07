@@ -10,7 +10,7 @@ public class Product {
     private String beschrijving;
     private double prijs;
 //todo: integer van maken:
-    public List<OVChipkaart> ovchipkaarten = new ArrayList<>();
+    public List<Integer> ovChipkaartenNummers = new ArrayList<>();
 
 
     public Product(int product_nummer, String naam, String beschrijving, double prijs){
@@ -18,19 +18,19 @@ public class Product {
         this.naam = naam;
         this.beschrijving = beschrijving;
         this.prijs = prijs;
-        setOvchipkaarten(ovchipkaarten);
+        setOvChipkaartenNummers(ovChipkaartenNummers);
     }
     public Product(){}
 
 
-    public void voegOVChipkaartToeAanProduct(OVChipkaart ovChipkaart){
-        getOvchipkaarten().add(ovChipkaart);
-        ovChipkaart.producten.add(this);
+    public void voegOvchipkaartNummerToeAanProduct(Integer kaartNummer){
+        ovChipkaartenNummers.add(kaartNummer);
+        //...todo: hier ook nog toevoegen aan de andere lijst
     }
 
-    public void verwijderOVChipkaartVanProduct(OVChipkaart ovChipkaart){
-        getOvchipkaarten().remove(ovChipkaart);
-        ovChipkaart.producten.remove(this);
+    public void verwijderOVChipkaartVanProduct(Integer kaartNummer){
+        ovChipkaartenNummers.remove(kaartNummer);
+        //...todo: hier ook nog toevoegen aan de andere lijst
     }
 
 
@@ -59,12 +59,12 @@ public class Product {
         this.prijs = prijs;
     }
 
-    public List<OVChipkaart> getOvchipkaarten() {
-        return ovchipkaarten;
+    public List<Integer> getOvChipkaartenNummers() {
+        return ovChipkaartenNummers;
     }
 
-    public void setOvchipkaarten(List<OVChipkaart> ovchipkaarten) {
-        this.ovchipkaarten = ovchipkaarten;
+    public void setOvChipkaartenNummers(List<Integer> kaartNummerLijst) {
+        this.ovChipkaartenNummers = kaartNummerLijst;
     }
 
     @Override

@@ -6,7 +6,6 @@ import Domein.OVChipkaart;
 import Domein.Product;
 import Domein.Reiziger;
 
-import javax.sound.sampled.Port;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,7 +101,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             for(Product p : ovChipkaart.getProducten()){
                 //...toevoeging:
                 //...maar eigenlijst hoef je toch helemaal geen producten te verwijderen als je een ovchipkaart verwijderd
-                if(p.getOvchipkaarten().isEmpty()){
+                if(p.getOvChipkaartenNummers().isEmpty()){
                     pdao.delete(p);
                 }
                 //todo: geen idee wat hier:
@@ -226,6 +225,8 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
 
             //todo: is dit wel goed->
             //ovChipkaart.voegProductToeAanOVChipkaart(product);
+
+//todo: deze en degene in product doen allebei iets anders, ff uitzoeken welke de goeie is want dit is chaos
             ovChipkaart.setProducten(pdao.findByOVChipkaart(ovChipkaart));
 
             ovlijst.add(ovChipkaart);

@@ -277,8 +277,8 @@ public class Main {
 //        //dao.save(ov);
 //
 //        odao.update(ov);
-            System.out.println();
-            System.out.println();
+        System.out.println();
+        System.out.println();
 
     }
 
@@ -303,10 +303,7 @@ public class Main {
         for (Product pr : pdao.findAll()) {
             System.out.println(pr);
         }
-ov.voegProductToeAanOVChipkaart(new Product());
-        ov.verwijderProductVanOVChipkaart(new Product());
-        p.verwijderOVChipkaartVanProduct(new OVChipkaart());
-        p.voegOVChipkaartToeAanProduct(new OVChipkaart(7, Date.valueOf("1944-1-1"), 7, 4.0, r));
+        ov.voegProductToeAanOVChipkaart(new Product());
         pdao.update(p);
     }
 

@@ -56,13 +56,13 @@ public class ProductDAOPsql implements ProductDAO {
 
 
     public void saveOV_ChipKaart_Product(Product product) throws SQLException {
-        if (product.getOvchipkaarten() != null) {
-            for (OVChipkaart ovChipkaart : product.getOvchipkaarten()) {
+        if (product.getOvChipkaartenNummers() != null) {
+            for (Integer kaartNummer : product.getOvChipkaartenNummers()) {
 
                 String queryOpslaanProducten = "insert into ov_chipkaart_product values(?,?,?,?)";
                 PreparedStatement ptOpslaanProducten = conn.prepareStatement(queryOpslaanProducten);
 
-                ptOpslaanProducten.setInt(1, ovChipkaart.getKaart_nummer());
+                ptOpslaanProducten.setInt(1, kaartNummer);
                 ptOpslaanProducten.setInt(2, product.getProduct_nummer());
                 ptOpslaanProducten.setString(3, "actief");
                 ptOpslaanProducten.setDate(4, Date.valueOf("1900-1-1"));
@@ -94,15 +94,15 @@ public class ProductDAOPsql implements ProductDAO {
 
 
             for(OVChipkaart o : ovdao.findByProduct(product)){
-                if(!product.getOvchipkaarten().contains(o)){
+                if(!product.getOvChipkaartenNummers().contains(o)){
                     //...delete in table
                     deleteOV_ChipKaart_Product(product);
 
                 }
             }
 
-            for(OVChipkaart o : product.getOvchipkaarten()){
-                if(!ovdao.findByProduct(product).contains(o)){
+            for(Integer ovChipkaartNummer : product.getOvChipkaartenNummers()){
+                if(!ovdao.findByProduct(product).contains(ovChipkaartNummer)){
                     //...insert into database
                     saveOV_ChipKaart_Product(product);
                 }
@@ -145,12 +145,12 @@ public class ProductDAOPsql implements ProductDAO {
 
 
     public void deleteOV_ChipKaart_Product(Product product) throws SQLException {
-        if (product.getOvchipkaarten() != null) {
-            for (OVChipkaart o : product.getOvchipkaarten()) {
+        if (product.getOvChipkaartenNummers() != null) {
+            for (Integer ovChipkaartNummer : product.getOvChipkaartenNummers()) {
                 String queryDeleteProducten = "delete from ov_chipkaart_product where kaart_nummer = ? and product_nummer = ?  and status = ? and last_update = ? ";
                 PreparedStatement ptDeleteProducten = conn.prepareStatement(queryDeleteProducten);
 
-                ptDeleteProducten.setInt(1, o.getKaart_nummer());
+                ptDeleteProducten.setInt(1, ovChipkaartNummer);
                 ptDeleteProducten.setInt(2, product.getProduct_nummer());
                 ptDeleteProducten.setString(3, "actief");
                 ptDeleteProducten.setDate(4, Date.valueOf("1900-01-01"));
@@ -192,16 +192,13 @@ public class ProductDAOPsql implements ProductDAO {
             //todo: ovchipkaartNummer toevoegen aan product: + findAll
 
 
-            //...1 van deze twee moet het worden, ff kijken welke: + ov wordt ov_kaart_nummer
-//            product.voegOVChipkaartToeAanProduct(ovChipkaart);
-//            for(OVChipkaart o : product.getOvchipkaarten()){
-//                product.voegOVChipkaartToeAanProduct(o);
+//            for(OVChipkaart o : ovdao.findByProduct(product)){
+//                product.voegOvchipkaartNummerToeAanProduct(o.getKaart_nummer());
 //            }
-            //...dit is zoals findAll ov is goedgekeurd
-            product.setOvchipkaarten(ovdao.findByProduct(product));
+            product.voegOvchipkaartNummerToeAanProduct(ovChipkaart.getKaart_nummer());
+
 
             productenLijst.add(product);
-
 
         }
         return productenLijst;
@@ -234,7 +231,9 @@ public class ProductDAOPsql implements ProductDAO {
 
             Product product = new Product(pn, nm, bs, pr);
 
-            product.setOvchipkaarten(ovdao.findByProduct(product));
+            for(OVChipkaart o : ovdao.findByProduct(product)){
+                product.voegOvchipkaartNummerToeAanProduct(o.getKaart_nummer());
+            }
 
             productenLijst.add(product);
 
