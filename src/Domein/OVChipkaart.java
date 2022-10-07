@@ -2,6 +2,7 @@ package Domein;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class OVChipkaart {
@@ -11,11 +12,10 @@ public class OVChipkaart {
     private int klasse;
     private double saldo;
     private Reiziger reiziger;
+    public List<Product> producten = new ArrayList();
 
-    public ArrayList<Product> producten = new ArrayList();
 
-    public OVChipkaart() {
-    }
+    public OVChipkaart(){}
 
     public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, double saldo, Reiziger reiziger) {
         this.kaart_nummer = kaart_nummer;
@@ -25,6 +25,17 @@ public class OVChipkaart {
         this.reiziger = reiziger;
         setProducten(producten);
     }
+
+    public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, double saldo) {
+        this.kaart_nummer = kaart_nummer;
+        this.geldig_tot = geldig_tot;
+        this.klasse = klasse;
+        this.saldo = saldo;
+        setProducten(producten);
+    }
+
+
+
 
     public void voegProductToeAanOVChipkaart(Product product){
         this.getProducten().add(product);
@@ -36,11 +47,12 @@ public class OVChipkaart {
         product.ovchipkaarten.remove(this);
     }
 
-    public ArrayList<Product> getProducten() {
+
+    public List<Product> getProducten() {
         return producten;
     }
 
-    public void setProducten(ArrayList<Product> producten) {
+    public void setProducten(List<Product> producten) {
         this.producten = producten;
     }
 
@@ -83,6 +95,8 @@ public class OVChipkaart {
                 ", klasse=" + klasse +
                 ", saldo=" + +saldo +
                 ", reiziger=" + reiziger +
+                " product " + producten +
                 '}';
+        //todo : product informatie meegeven:
     }
 }

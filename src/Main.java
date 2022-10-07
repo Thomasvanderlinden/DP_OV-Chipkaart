@@ -1,9 +1,13 @@
-import Dao.*;
+import Dao.adres.AdresDAO;
+import Dao.adres.AdresDAOPsql;
+import Dao.ovchipkaart.OVChipkaartDAOPsql;
+import Dao.product.ProductDAOPsql;
+import Dao.reiziger.ReizigerDAO;
+import Dao.reiziger.ReizigerDAOPsql;
 import Domein.*;
 
 import java.sql.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
@@ -245,10 +249,9 @@ public class Main {
 
         System.out.println("hieroo ############");
         for (OVChipkaart o : odao.findAll()) {
-            for (Product p : pdao.findByOVChipkaart(o)) {
-                o.voegProductToeAanOVChipkaart(p);
-            }
             System.out.println(o.getProducten());
+
+        }
 //        Reiziger r = new Reiziger(110, "teseten", "sdfds", "sdfsd", Date.valueOf("1900-1-1"));
 //        //rdao.save(r);
 //        OVChipkaart ov = new OVChipkaart(111111, Date.valueOf("1900-1-1"), 2, 39, r);
@@ -276,7 +279,7 @@ public class Main {
 //        odao.update(ov);
             System.out.println();
             System.out.println();
-        }
+
     }
 
     public static void testPDAO(ProductDAOPsql pdao) throws SQLException {
@@ -300,6 +303,11 @@ public class Main {
         for (Product pr : pdao.findAll()) {
             System.out.println(pr);
         }
+ov.voegProductToeAanOVChipkaart(new Product());
+        ov.verwijderProductVanOVChipkaart(new Product());
+        p.verwijderOVChipkaartVanProduct(new OVChipkaart());
+        p.voegOVChipkaartToeAanProduct(new OVChipkaart(7, Date.valueOf("1944-1-1"), 7, 4.0, r));
+        pdao.update(p);
     }
 
 

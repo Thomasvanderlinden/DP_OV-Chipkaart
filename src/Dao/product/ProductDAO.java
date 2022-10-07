@@ -1,4 +1,4 @@
-package Dao;
+package Dao.product;
 
 
 import Domein.OVChipkaart;

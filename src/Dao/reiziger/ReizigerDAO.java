@@ -1,4 +1,4 @@
-package Dao;
+package Dao.reiziger;
 
 import Domein.Reiziger;
 

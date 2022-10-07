@@ -1,14 +1,12 @@
-package Dao;
+package Dao.product;
 
-import Domein.Adres;
+import Dao.ovchipkaart.OVChipkaartDAOPsql;
+import Dao.reiziger.ReizigerDAOPsql;
 import Domein.OVChipkaart;
 import Domein.Product;
-import org.postgresql.replication.fluent.physical.PhysicalReplicationOptions;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public class ProductDAOPsql implements ProductDAO {
 
@@ -20,19 +18,17 @@ public class ProductDAOPsql implements ProductDAO {
     public ProductDAOPsql(Connection conn) {
         this.conn = conn;
     }
-
     public void setOVDAO(OVChipkaartDAOPsql ovdao) {
         this.ovdao = ovdao;
 
     }
-
     public void setRDAO(ReizigerDAOPsql rdao) {
         this.rdao = rdao;
     }
 
 
     @Override
-    public boolean save(Product product) throws SQLException {
+    public boolean save(Product product) {
         try {
             String query = "insert into product(product_nummer, naam , beschrijving, prijs) values(?,?,?,?)";
             PreparedStatement pt = conn.prepareStatement(query);
@@ -45,23 +41,8 @@ public class ProductDAOPsql implements ProductDAO {
             pt.executeUpdate();
             pt.close();
 
-
-            if (product.getOvchipkaarten() != null) {
-                for (OVChipkaart ovChipkaart : product.getOvchipkaarten()) {
-
-                    String queryOpslaanProducten = "insert into ov_chipkaart_product values(?,?,?,?)";
-                    PreparedStatement ptOpslaanProducten = conn.prepareStatement(queryOpslaanProducten);
-
-                    ptOpslaanProducten.setInt(1, ovChipkaart.getKaart_nummer());
-                    ptOpslaanProducten.setInt(2, product.getProduct_nummer());
-                    ptOpslaanProducten.setString(3, "hier");
-                    ptOpslaanProducten.setDate(4, Date.valueOf("1900-1-1"));
-
-                    ptOpslaanProducten.executeUpdate();
-                    ptOpslaanProducten.close();
-
-                }
-            }
+            //staat in aparte methode ivm update:
+            saveOV_ChipKaart_Product(product);
 
 
             return true;
@@ -72,6 +53,27 @@ public class ProductDAOPsql implements ProductDAO {
         }
 
     }
+
+
+    public void saveOV_ChipKaart_Product(Product product) throws SQLException {
+        if (product.getOvchipkaarten() != null) {
+            for (OVChipkaart ovChipkaart : product.getOvchipkaarten()) {
+
+                String queryOpslaanProducten = "insert into ov_chipkaart_product values(?,?,?,?)";
+                PreparedStatement ptOpslaanProducten = conn.prepareStatement(queryOpslaanProducten);
+
+                ptOpslaanProducten.setInt(1, ovChipkaart.getKaart_nummer());
+                ptOpslaanProducten.setInt(2, product.getProduct_nummer());
+                ptOpslaanProducten.setString(3, "actief");
+                ptOpslaanProducten.setDate(4, Date.valueOf("1900-1-1"));
+
+                ptOpslaanProducten.executeUpdate();
+                ptOpslaanProducten.close();
+
+            }
+        }
+    }
+
 
     @Override
     public boolean update(Product product) {
@@ -90,22 +92,19 @@ public class ProductDAOPsql implements ProductDAO {
             pt.close();
 
 
-            if (product.getOvchipkaarten() != null) {
-                for (OVChipkaart ovChipkaart : product.getOvchipkaarten()) {
 
-                    String queryUpdateProducten = "update ov_chipkaart_product set kaart_nummer = ? , product_nummer = ? , status = ?, last_update = ? where kaart_nummer = ?";
-                    PreparedStatement ptUpdateProducten = conn.prepareStatement(queryUpdateProducten);
+            for(OVChipkaart o : ovdao.findByProduct(product)){
+                if(!product.getOvchipkaarten().contains(o)){
+                    //...delete in table
+                    deleteOV_ChipKaart_Product(product);
 
-                    ptUpdateProducten.setInt(1, ovChipkaart.getKaart_nummer());
-                    ptUpdateProducten.setInt(2, product.getProduct_nummer());
-                    ptUpdateProducten.setString(3, "hooor");
-                    ptUpdateProducten.setDate(4, Date.valueOf("1607-01-01"));
+                }
+            }
 
-                    ptUpdateProducten.setInt(5, ovChipkaart.getKaart_nummer());
-
-
-                    ptUpdateProducten.executeUpdate();
-                    ptUpdateProducten.close();
+            for(OVChipkaart o : product.getOvchipkaarten()){
+                if(!ovdao.findByProduct(product).contains(o)){
+                    //...insert into database
+                    saveOV_ChipKaart_Product(product);
                 }
             }
 
@@ -120,23 +119,8 @@ public class ProductDAOPsql implements ProductDAO {
     public boolean delete(Product product) {
         try {
 
-
-            if (product.getOvchipkaarten() != null) {
-                for (OVChipkaart o : product.getOvchipkaarten()) {
-                    String queryDeleteProducten = "delete from ov_chipkaart_product where kaart_nummer = ? and product_nummer = ?  and status = ? and last_update = ? ";
-                    PreparedStatement ptDeleteProducten = conn.prepareStatement(queryDeleteProducten);
-
-                    ptDeleteProducten.setInt(1, o.getKaart_nummer());
-                    ptDeleteProducten.setInt(2, product.getProduct_nummer());
-                    ptDeleteProducten.setString(3, "hier");
-                    ptDeleteProducten.setDate(4, Date.valueOf("1900-01-01"));
-
-                    ptDeleteProducten.executeUpdate();
-                    ptDeleteProducten.close();
-
-
-                }
-            }
+            //staat in aparte methode ivm update:
+            deleteOV_ChipKaart_Product(product);
 
 
             String query = "delete from product where product_nummer = ? and naam = ? and beschrijving = ? and prijs = ?";
@@ -150,7 +134,6 @@ public class ProductDAOPsql implements ProductDAO {
             pt.executeUpdate();
             pt.close();
 
-
             return true;
 
         } catch (SQLException e) {
@@ -159,15 +142,37 @@ public class ProductDAOPsql implements ProductDAO {
         }
     }
 
+
+
+    public void deleteOV_ChipKaart_Product(Product product) throws SQLException {
+        if (product.getOvchipkaarten() != null) {
+            for (OVChipkaart o : product.getOvchipkaarten()) {
+                String queryDeleteProducten = "delete from ov_chipkaart_product where kaart_nummer = ? and product_nummer = ?  and status = ? and last_update = ? ";
+                PreparedStatement ptDeleteProducten = conn.prepareStatement(queryDeleteProducten);
+
+                ptDeleteProducten.setInt(1, o.getKaart_nummer());
+                ptDeleteProducten.setInt(2, product.getProduct_nummer());
+                ptDeleteProducten.setString(3, "actief");
+                ptDeleteProducten.setDate(4, Date.valueOf("1900-01-01"));
+
+                ptDeleteProducten.executeUpdate();
+                ptDeleteProducten.close();
+
+
+            }
+        }
+    }
+
     @Override
     public List<Product> findByOVChipkaart(OVChipkaart ovChipkaart) throws SQLException {
         String query =
-                "select product.product_nummer, product.naam, product.beschrijving, product.prijs\n" +
-                        "from ov_chipkaart\n" +
-                        "inner join ov_chipkaart_product on ov_chipkaart.kaart_nummer = ov_chipkaart_product.Kaart_nummer\n" +
-                        "inner join product on ov_chipkaart_product.product_nummer = product.product_nummer\n" +
-                        "where ov_chipkaart.kaart_nummer = ?";
+                        "select product.product_nummer, product.naam, product.beschrijving, product.prijs\n" +
+                        "from product\n" +
+                        "inner join ov_chipkaart_product on  product.product_nummer = ov_chipkaart_product.product_nummer\n" +
+                        "where ov_chipkaart_product.kaart_nummer = ? ";
 
+
+        //todo: 1 join kan weg: done
 
         PreparedStatement pt = conn.prepareStatement(query);
 
@@ -184,7 +189,19 @@ public class ProductDAOPsql implements ProductDAO {
             double pr = myRs.getDouble("prijs");
 
             Product product = new Product(pn, nm, bs, pr);
+            //todo: ovchipkaartNummer toevoegen aan product: + findAll
+
+
+            //...1 van deze twee moet het worden, ff kijken welke: + ov wordt ov_kaart_nummer
+//            product.voegOVChipkaartToeAanProduct(ovChipkaart);
+//            for(OVChipkaart o : product.getOvchipkaarten()){
+//                product.voegOVChipkaartToeAanProduct(o);
+//            }
+            //...dit is zoals findAll ov is goedgekeurd
+            product.setOvchipkaarten(ovdao.findByProduct(product));
+
             productenLijst.add(product);
+
 
         }
         return productenLijst;
@@ -216,6 +233,9 @@ public class ProductDAOPsql implements ProductDAO {
             double pr = myRs.getDouble("prijs");
 
             Product product = new Product(pn, nm, bs, pr);
+
+            product.setOvchipkaarten(ovdao.findByProduct(product));
+
             productenLijst.add(product);
 
         }

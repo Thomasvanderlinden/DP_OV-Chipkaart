@@ -1,6 +1,7 @@
 package Domein;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class Product {
@@ -8,8 +9,9 @@ public class Product {
     private String naam;
     private String beschrijving;
     private double prijs;
+//todo: integer van maken:
+    public List<OVChipkaart> ovchipkaarten = new ArrayList<>();
 
-    public ArrayList<OVChipkaart> ovchipkaarten = new ArrayList<>();
 
     public Product(int product_nummer, String naam, String beschrijving, double prijs){
         this.product_nummer = product_nummer;
@@ -57,11 +59,11 @@ public class Product {
         this.prijs = prijs;
     }
 
-    public ArrayList<OVChipkaart> getOvchipkaarten() {
+    public List<OVChipkaart> getOvchipkaarten() {
         return ovchipkaarten;
     }
 
-    public void setOvchipkaarten(ArrayList<OVChipkaart> ovchipkaarten) {
+    public void setOvchipkaarten(List<OVChipkaart> ovchipkaarten) {
         this.ovchipkaarten = ovchipkaarten;
     }
 

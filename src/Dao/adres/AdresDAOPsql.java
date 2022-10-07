@@ -1,5 +1,6 @@
-package Dao;
+package Dao.adres;
 
+import Dao.reiziger.ReizigerDAOPsql;
 import Domein.Adres;
 import Domein.Reiziger;
 

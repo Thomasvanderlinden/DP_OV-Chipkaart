@@ -1,6 +1,8 @@
-package Dao;
+package Dao.reiziger;
 
 
+import Dao.adres.AdresDAO;
+import Dao.ovchipkaart.OVChipkaartDAO;
 import Domein.Adres;
 import Domein.OVChipkaart;
 import Domein.Reiziger;

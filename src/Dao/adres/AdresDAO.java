@@ -1,4 +1,4 @@
-package Dao;
+package Dao.adres;
 
 import Domein.Adres;
 import Domein.Reiziger;
