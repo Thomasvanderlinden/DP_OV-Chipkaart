@@ -9,7 +9,6 @@ public class Product {
     private String naam;
     private String beschrijving;
     private double prijs;
-//todo: integer van maken:
     public List<Integer> ovChipkaartenNummers = new ArrayList<>();
 
 
@@ -18,19 +17,20 @@ public class Product {
         this.naam = naam;
         this.beschrijving = beschrijving;
         this.prijs = prijs;
-        setOvChipkaartenNummers(ovChipkaartenNummers);
     }
+
+
     public Product(){}
 
 
-    public void voegOvchipkaartNummerToeAanProduct(Integer kaartNummer){
-        ovChipkaartenNummers.add(kaartNummer);
-        //...todo: hier ook nog toevoegen aan de andere lijst
+    public void voegOvchipkaartNummerToeAanProduct(int kaartNummer){
+        if(!ovChipkaartenNummers.contains(kaartNummer)){
+            ovChipkaartenNummers.add(kaartNummer);
+        }
     }
 
     public void verwijderOVChipkaartVanProduct(Integer kaartNummer){
         ovChipkaartenNummers.remove(kaartNummer);
-        //...todo: hier ook nog toevoegen aan de andere lijst
     }
 
 
@@ -55,6 +55,11 @@ public class Product {
     public double getPrijs() {
         return prijs;
     }
+
+    public void setPrijs(double prijs) {
+        this.prijs = prijs;
+    }
+
     public void setPrijs(int prijs) {
         this.prijs = prijs;
     }

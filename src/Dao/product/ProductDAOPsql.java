@@ -172,8 +172,6 @@ public class ProductDAOPsql implements ProductDAO {
                         "where ov_chipkaart_product.kaart_nummer = ? ";
 
 
-        //todo: 1 join kan weg: done
-
         PreparedStatement pt = conn.prepareStatement(query);
 
         pt.setInt(1, ovChipkaart.getKaart_nummer());
@@ -189,13 +187,11 @@ public class ProductDAOPsql implements ProductDAO {
             double pr = myRs.getDouble("prijs");
 
             Product product = new Product(pn, nm, bs, pr);
-            //todo: ovchipkaartNummer toevoegen aan product: + findAll
 
 
-//            for(OVChipkaart o : ovdao.findByProduct(product)){
-//                product.voegOvchipkaartNummerToeAanProduct(o.getKaart_nummer());
-//            }
-            product.voegOvchipkaartNummerToeAanProduct(ovChipkaart.getKaart_nummer());
+            for(OVChipkaart o : ovdao.findByProduct(product)){
+                product.voegOvchipkaartNummerToeAanProduct(o.getKaart_nummer());
+            }
 
 
             productenLijst.add(product);

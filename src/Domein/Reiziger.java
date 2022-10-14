@@ -13,8 +13,7 @@ public class Reiziger {
 
     private Adres adres;
 
-    private List <OVChipkaart> ovChipkaarts_reiziger = new ArrayList<>();
-
+    private List<OVChipkaart> ovChipkaarts_reiziger = new ArrayList<>();
 
 
     public Reiziger() {
@@ -28,12 +27,14 @@ public class Reiziger {
         this.geboortedatum = geboortedatum;
     }
 
-    public void ovkaartToevoegen(OVChipkaart ovChipkaart){
+    public void ovkaartToevoegen(OVChipkaart ovChipkaart) {
         ovChipkaarts_reiziger.add(ovChipkaart);
     }
 
-    public void ovkaartVerwijderen(OVChipkaart ovChipkaart){ovChipkaarts_reiziger.remove(ovChipkaart);}
-
+    public void ovkaartVerwijderen(OVChipkaart ovChipkaart) {
+        ovChipkaarts_reiziger.remove(ovChipkaart);
+        //ovChipkaart.producten.(ovChipkaart.getProducten());
+    }
 
 
     public Adres getAdres() {
@@ -92,6 +93,7 @@ public class Reiziger {
     public void setOvChipkaarts_reiziger(List<OVChipkaart> ovChipkaarts_reiziger) {
         this.ovChipkaarts_reiziger = ovChipkaarts_reiziger;
     }
+
     @Override
     public String toString() {
 

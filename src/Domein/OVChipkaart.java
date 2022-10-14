@@ -12,7 +12,7 @@ public class OVChipkaart {
     private int klasse;
     private double saldo;
     private Reiziger reiziger;
-    public List<Product> producten = new ArrayList();
+    public List<Product> producten = new ArrayList<>();
 
 
     public OVChipkaart() {
@@ -24,6 +24,7 @@ public class OVChipkaart {
         this.klasse = klasse;
         this.saldo = saldo;
         this.reiziger = reiziger;
+        this.producten = new ArrayList<>();
     }
 
     public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, double saldo) {
@@ -31,17 +32,22 @@ public class OVChipkaart {
         this.geldig_tot = geldig_tot;
         this.klasse = klasse;
         this.saldo = saldo;
+        this.producten = new ArrayList<>();
+
     }
 
 
     public void voegProductToeAanOVChipkaart(Product product) {
-        this.producten.add(product);
-        //...todo: hier ook nog toevoegen aan de andere lijst
+        if (!this.producten.contains(product)) {
+            this.producten.add(product);
+            product.voegOvchipkaartNummerToeAanProduct(this.getKaart_nummer());
+        }
+
     }
 
     public void verwijderProductVanOVChipkaart(Product product) {
         this.producten.remove(product);
-        //...todo: hier ook nog toevoegen aan de andere lijst
+        product.verwijderOVChipkaartVanProduct(this.getKaart_nummer());
     }
 
 
@@ -103,6 +109,5 @@ public class OVChipkaart {
                 ", reiziger=" + reiziger +
                 " product " + producten +
                 '}';
-        //todo : product informatie meegeven:
     }
 }

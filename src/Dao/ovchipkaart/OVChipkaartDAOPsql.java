@@ -99,13 +99,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         try {
 
             for(Product p : ovChipkaart.getProducten()){
-                //...toevoeging:
-                //...maar eigenlijst hoef je toch helemaal geen producten te verwijderen als je een ovchipkaart verwijderd
-                if(p.getOvChipkaartenNummers().isEmpty()){
-                    pdao.delete(p);
-                }
-                //todo: geen idee wat hier:
-                //todo: zie aantekeningen:
+                pdao.deleteOV_ChipKaart_Product(p);
             }
 
 
@@ -152,12 +146,14 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             ovChipkaart.setReiziger(reiziger);
 
             ovChipkaart.setReiziger(reiziger);
+
+
+            for(Product p : pdao.findByOVChipkaart(ovChipkaart)){
+                ovChipkaart.voegProductToeAanOVChipkaart(p);
+            }
             lijstMetOVS.add(ovChipkaart);
 
-            //todo: is dit al genoeg>?
-            ovChipkaart.setProducten(pdao.findByOVChipkaart(ovChipkaart));
         }
-        //todo: producten toevoegen:
 
         myRs.close();
         pt.close();
@@ -188,10 +184,13 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             double sa = myRs.getDouble("saldo");
             int Rid = myRs.getInt("reiziger_id");
 
-            OVChipkaart ov = new OVChipkaart(kn, gd, k, sa, rdao.findReizigerById(Rid));
+            OVChipkaart ovChipkaart = new OVChipkaart(kn, gd, k, sa, rdao.findReizigerById(Rid));
 
-            ov.setProducten(pdao.findByOVChipkaart(ov));
-            ovlijst.add(ov);
+            for(Product p : pdao.findByOVChipkaart(ovChipkaart)){
+                ovChipkaart.voegProductToeAanOVChipkaart(p);
+            }
+
+            ovlijst.add(ovChipkaart);
 
         }
         myRs.close();
@@ -223,12 +222,9 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
 
             OVChipkaart ovChipkaart = new OVChipkaart(pn, nm, bs, pr);
 
-            //todo: is dit wel goed->
-            //ovChipkaart.voegProductToeAanOVChipkaart(product);
-
-//todo: deze en degene in product doen allebei iets anders, ff uitzoeken welke de goeie is want dit is chaos
-            ovChipkaart.setProducten(pdao.findByOVChipkaart(ovChipkaart));
-
+            for(Product p : pdao.findByOVChipkaart(ovChipkaart)){
+                ovChipkaart.voegProductToeAanOVChipkaart(p);
+            }
             ovlijst.add(ovChipkaart);
 
         }
